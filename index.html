@@ -55,6 +55,9 @@
   .spruch{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:16px;line-height:1.45}
   .spruch small{display:block;font-size:12px;color:var(--gold);margin-bottom:4px}
   .spruch .pointe{display:block;margin-top:6px;color:var(--gold2)}
+  .xmas{padding:14px 16px}
+  .xmas .cd b{font-size:clamp(22px,7vw,30px)}
+  .xmas .heute{font-family:Georgia,serif;font-size:24px;margin:0}
   .surprise{display:block;width:100%;text-align:left;margin-top:16px;border:1px solid var(--gold);background:var(--red);
     color:var(--cream);border-radius:14px;padding:14px 16px;font-size:16px;line-height:1.35;cursor:pointer}
   .surprise b{display:block;font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:2px}
@@ -99,6 +102,7 @@
   <div class="vbar" id="vbar" hidden></div>
   <p class="hint" id="hint"></p>
   <section class="pre" id="pre" hidden></section>
+  <section class="pre xmas" id="xmas" hidden><p class="lbl">Noch bis Heiligabend</p><div class="cd" id="cdX"></div></section>
   <div class="grid" id="grid"></div>
 
   <section class="board" id="boardBox">
@@ -214,6 +218,7 @@ const SPRUCH_RESERVE = [
 const getItem = id => String(id).startsWith("b") ? BONUS[+String(id).slice(1)-1] : TAGE[id-1];
 const labelOf = id => String(id).startsWith("b") ? "Überraschung" : `Türchen ${id}`;
 const START_MS = Date.UTC(2026,10,30,23,0,0); // 1.12.2026 00:00 in Berlin
+const XMAS_MS = Date.UTC(2026,11,23,23,0,0);  // 24.12.2026 00:00 in Berlin
 const TYP_LABEL = {frage:"Frage", quiz:"Quiz", foto:"Foto", aufgabe:"Aufgabe", satz:"Gedanke"};
 // feste, gemischte Anordnung der Türchen
 const REIHENFOLGE = [7,15,2,21,11,24,4,18,13,1,20,9,16,6,23,10,3,19,12,22,8,14,5,17];
@@ -312,6 +317,9 @@ function render(){
   document.getElementById("hint").hidden = pre;
   document.getElementById("grid").hidden = pre;
   document.getElementById("boardBox").hidden = pre;
+  const xm = document.getElementById("xmas");
+  xm.hidden = pre || (!VORSCHAU && heuteNr()===0 && Date.now() > XMAS_MS + 864e5);
+  if (!xm.hidden) tickXmas();
   renderPre();
   if (pre) return;
 
@@ -378,7 +386,17 @@ function tickCountdown(){
   el.innerHTML = [[tg,tg===1?"Tag":"Tage"],[pad(h),"Std"],[pad(m),"Min"],[pad(s),"Sek"]]
     .map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join("");
 }
-setInterval(tickCountdown, 1000);
+function tickXmas(){
+  const box = document.getElementById("xmas"), el = document.getElementById("cdX");
+  if (!box || box.hidden) return;
+  const ms = XMAS_MS - Date.now();
+  if (ms <= 0){ box.innerHTML = `<p class="heute">Heute ist Heiligabend! 🎄</p>`; return; }
+  const tg=Math.floor(ms/864e5), h=Math.floor(ms/36e5)%24, m=Math.floor(ms/6e4)%60, s=Math.floor(ms/1e3)%60;
+  const pad = n => String(n).padStart(2,"0");
+  el.innerHTML = [[tg,tg===1?"Tag":"Tage"],[pad(h),"Std"],[pad(m),"Min"],[pad(s),"Sek"]]
+    .map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join("");
+}
+setInterval(() => { tickCountdown(); tickXmas(); }, 1000);
 
 function renderBoard(){
   const punkte = {}, tage = STATE.tage || {};
@@ -428,8 +446,8 @@ function openDoor(nr){
     body += `<a class="btn wa" id="waBtn" href="#">In WhatsApp antworten 💬</a>
       <button class="btn ok" id="doneBtn">${istDabei?"✓ Erledigt":"Hab ich gemacht ✓"}</button>`;
   }
-  body += `<div class="dabei">${dabeiNamen.length ? "Dabei: "+dabeiNamen.map(esc).join(", ") : "Noch niemand dabei – sei die/der Erste."}</div>
-    <button class="btn ghost" id="closeBtn">Schließen</button>`;
+  if (t.typ!=="satz") body += `<div class="dabei">${dabeiNamen.length ? "Dabei: "+dabeiNamen.map(esc).join(", ") : "Noch niemand dabei – sei die/der Erste."}</div>`;
+  body += `<button class="btn ghost" id="closeBtn">Schließen</button>`;
   s.innerHTML = body;
   openSheet(true);
 
