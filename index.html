@@ -172,10 +172,29 @@ const TAGE = [
 ];
 
 /* Aufwärmrunde: vor dem 1.12. schon offen */
-const BONUS = [
+const BONUS = [ // Überraschungs-Topf: jeder bekommt pro Tag (24.–30.11.) eine zufällige davon
   {typ:"foto", titel:"Erste Deko", text:"Zeig deine erste Weihnachtsdeko – oder das Chaos davor. Beides zählt."},
-  {typ:"frage", titel:"Wunsch", text:"Was wünschst du dir dieses Jahr – nicht zum Auspacken, sondern zum Erleben?"},
   {typ:"foto", titel:"Kuschelecke", text:"Wo sitzt du an Winterabenden am liebsten? Foto von deinem Lieblingsplatz zu Hause."},
+  {typ:"foto", titel:"Lieblingstasse", text:"Zeig die Tasse, aus der du am liebsten trinkst – gern mit Inhalt."},
+  {typ:"foto", titel:"Was gibt's heute?", text:"Foto von deinem Essen heute – egal ob Festmahl oder Butterbrot."},
+  {typ:"foto", titel:"Hausschuh-Check", text:"Zeig deine Hausschuhe. Oder deine Füße, falls du keine hast."},
+  {typ:"foto", titel:"Sofablick", text:"Setz dich aufs Sofa und fotografier, was du von da aus siehst."},
+  {typ:"foto", titel:"Haustier oder Kuscheltier", text:"Zeig dein Haustier – oder, falls keins da ist, das nächstbeste Kuscheltier."},
+  {typ:"frage", titel:"Wunsch", text:"Was wünschst du dir dieses Jahr – nicht zum Auspacken, sondern zum Erleben?"},
+  {typ:"frage", titel:"Ohrwurm", text:"Welches Weihnachtslied geht dir jedes Jahr nicht mehr aus dem Kopf?"},
+  {typ:"frage", titel:"Vorfreude", text:"Worauf freust du dich im Dezember am meisten?"},
+  {typ:"frage", titel:"Familienessen", text:"Welches Essen aus der Familie könntest du jeden Tag essen?"},
+  {typ:"frage", titel:"Die Geschichte", text:"Welche Familiengeschichte wird bei jedem Treffen wieder erzählt?"},
+  {typ:"frage", titel:"Kinderzimmer", text:"Was war früher dein absolutes Lieblingsspielzeug?"},
+  {typ:"aufgabe", titel:"Ein Emoji", text:"Schick genau ein Emoji in die Gruppe, das deine Woche beschreibt. Keine Erklärung!"},
+  {typ:"aufgabe", titel:"Drei Wörter", text:"Beschreib deinen heutigen Tag in genau drei Wörtern."},
+  {typ:"aufgabe", titel:"Ho ho ho", text:"Schick eine Sprachnachricht mit deinem besten „Ho ho ho“."},
+  {typ:"aufgabe", titel:"Gesichtsausdruck", text:"Selfie mit deinem müdesten oder deinem fröhlichsten Gesicht – du entscheidest."},
+  {typ:"aufgabe", titel:"Novembernote", text:"Welche Note gibst du dem November? 1 bis 10, ab in die Gruppe."},
+  {typ:"satz", titel:"Heute nichts", text:"Heute musst du gar nichts machen. Einfach nur: schön, dass du dabei bist."},
+  {typ:"satz", titel:"Kleiner Tipp", text:"Heute Abend eine Kerze an und das Handy für zehn Minuten weglegen. Danach darfst du wieder reinschauen."},
+  {typ:"satz", titel:"Wusstest du?", text:"In Norwegen versteckt man an Heiligabend traditionell die Besen – damit die Hexen sie nicht klauen."},
+  {typ:"satz", titel:"Respekt", text:"Noch nicht mal Dezember, und du schaust schon rein. Du bist bereit."},
 ];
 /* Witz oder Spruch für jeden Tag bis zum 1.12. (Tag im November → Text) */
 const SPRUECHE = {
@@ -195,7 +214,7 @@ const SPRUCH_RESERVE = [
 const getItem = id => String(id).startsWith("b") ? BONUS[+String(id).slice(1)-1] : TAGE[id-1];
 const labelOf = id => String(id).startsWith("b") ? "Überraschung" : `Türchen ${id}`;
 const START_MS = Date.UTC(2026,10,30,23,0,0); // 1.12.2026 00:00 in Berlin
-const TYP_LABEL = {frage:"Frage", quiz:"Quiz", foto:"Foto", aufgabe:"Aufgabe"};
+const TYP_LABEL = {frage:"Frage", quiz:"Quiz", foto:"Foto", aufgabe:"Aufgabe", satz:"Gedanke"};
 // feste, gemischte Anordnung der Türchen
 const REIHENFOLGE = [7,15,2,21,11,24,4,18,13,1,20,9,16,6,23,10,3,19,12,22,8,14,5,17];
 
@@ -318,11 +337,12 @@ function render(){
 
 /* Überraschungen: jede Person bekommt an 3 zufälligen Tagen (24.–30.11.) eine Bonus-Aufgabe */
 function hashStr(str){ let h=2166136261; for (const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return h>>>0; }
-function surpriseDays(name){
-  const days=[24,25,26,27,28,29,30]; let seed=hashStr(name.trim().toLowerCase())||1;
-  for (let i=days.length-1;i>0;i--){ seed=(Math.imul(seed^(seed>>>15),2246822507)>>>0)||7; const j=seed%(i+1); [days[i],days[j]]=[days[j],days[i]]; }
-  return days.slice(0,BONUS.length).sort((a,b)=>a-b);
+function surpriseFor(name, tag){ // fester, aber zufälliger Mix pro Name – innerhalb einer Person ohne Wiederholung
+  const idx = BONUS.map((_,i)=>i); let seed = hashStr(name.trim().toLowerCase()) || 1;
+  for (let i=idx.length-1;i>0;i--){ seed=(Math.imul(seed^(seed>>>15),2246822507)>>>0)||7; const j=seed%(i+1); [idx[i],idx[j]]=[idx[j],idx[i]]; }
+  return idx[(tag-24) % idx.length];
 }
+let PREVIEW_SHIFT = 0;
 
 function renderPre(){
   const box = document.getElementById("pre");
@@ -332,18 +352,13 @@ function renderPre(){
   const heute = t.m===11 ? t.d : 31;
   const sp = (t.m===11 && SPRUECHE[t.d]) || SPRUCH_RESERVE[t.d % SPRUCH_RESERVE.length];
   let extra = "";
-  if (NAME){
-    const tage = surpriseDays(NAME), me = safeKey(NAME);
-    const items = BONUS.map((b,i)=>({b, id:"b"+(i+1), tag: VORSCHAU ? heute : tage[i]}))
-      .filter(x => x.tag <= heute)
-      .map(x => ({...x, done: !!(tagData(x.id).dabei && tagData(x.id).dabei[me])}));
-    const offen = items.filter(x=>!x.done);
-    extra = offen.map(x => x.tag===heute
-      ? `<button class="surprise" data-id="${x.id}"><b>🎁 Überraschung!</b>Heute wartet eine kleine Bonus-Aufgabe auf dich. Tippen zum Öffnen.</button>`
-      : `<button class="surprise old" data-id="${x.id}"><b>Noch offen</b>Deine Bonus-Aufgabe vom ${x.tag}. November.</button>`).join("");
-    const erledigt = items.length - offen.length;
-    if (erledigt) extra += `<p class="teaser">✓ ${erledigt} Bonus-${erledigt===1?"Aufgabe":"Aufgaben"} erledigt.</p>`;
-    if (items.length < BONUS.length) extra += `<p class="teaser">Schau jeden Tag mal rein – vielleicht wartet eine Überraschung auf dich.</p>`;
+  if (NAME && heute>=24 && heute<=30){
+    const i = (surpriseFor(NAME, heute) + PREVIEW_SHIFT) % BONUS.length, id = "b"+(i+1), b = BONUS[i];
+    const done = !!(tagData(id).dabei && tagData(id).dabei[safeKey(NAME)]);
+    extra = done
+      ? `<button class="surprise old" data-id="${id}"><b>✓ Heute erledigt</b>Morgen wartet die nächste Überraschung.</button>`
+      : `<button class="surprise" data-id="${id}"><b>🎁 Deine Überraschung für heute</b>Tippen zum Öffnen.</button>`;
+    if (VORSCHAU) extra += `<button class="btn ghost" id="shuffle" style="color:var(--muted)">🎲 Andere Überraschung zeigen (nur Vorschau) · ${i+1}/${BONUS.length}</button>`;
   }
   box.innerHTML = `
     <p class="lbl">Noch bis zum ersten Türchen</p>
@@ -351,6 +366,7 @@ function renderPre(){
     <p class="spruch"><small>Witz des Tages</small>${esc(sp[0])}${sp[1]?`<span class="pointe">${esc(sp[1])}</span>`:""}</p>
     ${extra}`;
   box.querySelectorAll(".surprise").forEach(b => b.onclick = () => openDoor(b.dataset.id));
+  const sh = document.getElementById("shuffle"); if (sh) sh.onclick = () => { PREVIEW_SHIFT++; renderPre(); };
   tickCountdown();
 }
 function tickCountdown(){
@@ -406,6 +422,8 @@ function openDoor(nr){
         <p class="result" style="color:#55655f">${richtige} von ${alle.length} lagen richtig.</p>
         <a class="btn wa" id="waBtn" href="#">In der Gruppe angeben 💬</a>`;
     }
+  } else if (t.typ==="satz"){
+    if (!istDabei) setTimeout(()=>save(`tage/${nr}/dabei/${me}`, true), 0);
   } else {
     body += `<a class="btn wa" id="waBtn" href="#">In WhatsApp antworten 💬</a>
       <button class="btn ok" id="doneBtn">${istDabei?"✓ Erledigt":"Hab ich gemacht ✓"}</button>`;
