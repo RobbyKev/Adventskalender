@@ -3,139 +3,152 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#12261f">
+<meta name="theme-color" content="#123527">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Familien-Adventskalender</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Richtung: ein Papp-Adventskalender auf Tannengrün.
-   Ruhige grüne Fläche, ein cremefarbener Kalenderbogen als Herzstück,
-   perforierte Türchen, Wachssiegel-Rot für heute und erledigt. */
+/* Richtung: Apple-artige Klarheit im Weihnachtslicht.
+   Tiefes Tannengrün als Grund, gläserne Flächen, Gold für Zahlen und Linien,
+   Kaminrot nur für das heutige Türchen und die Überraschung. */
 :root{
-  --pine:#12261f; --pine2:#1a332a; --pine3:#24443a;
-  --cream:#f3ead8; --muted:#a3b2a9; --faint:#73867b; --hair:rgba(243,234,216,.10);
-  --paper:#f1e7d3; --door:#e8dabf; --kraft:#cdb185; --ink:#1f2b25; --ink2:#56635b; --ink3:#8b9188;
-  --perf:rgba(31,43,37,.30); --red:#a8362b; --red2:#8f2c23; --gold:#d6b26a; --wa:#1f6b45;
-  --serif:"Fraunces",Georgia,serif; --sans:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  --ease:cubic-bezier(.2,.7,.2,1);
+  --bg1:#0b1f17; --bg2:#123527;
+  --glass:rgba(255,255,255,.06); --glass2:rgba(255,255,255,.10); --hair:rgba(255,255,255,.12);
+  --text:#f5efe2; --text2:rgba(245,239,226,.68); --text3:rgba(245,239,226,.42);
+  --gold:#e0bd6e; --gold2:#c9a052; --goldHair:rgba(224,189,110,.38);
+  --fire:#b8322a; --fire2:#8e211b;
+  --tile:#17402f; --tile2:#123426;
+  --sheet:#14291f;
+  --sys:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Roboto,sans-serif;
+  --round:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Roboto,sans-serif;
+  --spring:cubic-bezier(.32,.72,0,1);
 }
 *{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--pine);color:var(--cream);font:16px/1.5 var(--sans)}
-body{min-height:100vh;padding:env(safe-area-inset-top) 0 calc(32px + env(safe-area-inset-bottom));overflow-x:clip}
+html{background:var(--bg1)}
+body{margin:0;min-height:100vh;color:var(--text);font:17px/1.47 var(--sys);-webkit-font-smoothing:antialiased;
+  background:linear-gradient(180deg,var(--bg2) 0%,var(--bg1) 70%) fixed;
+  padding:env(safe-area-inset-top) 0 calc(40px + env(safe-area-inset-bottom));overflow-x:clip}
 button{font:inherit;color:inherit}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 #snow{position:fixed;inset:0;pointer-events:none;z-index:0}
-main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:24px 16px}
+main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:20px 16px}
 
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 4px 24px}
-.over{font-size:13px;color:var(--muted);margin:0 0 4px}
-h1{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1.05;margin:0;letter-spacing:-.01em}
-.who{height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--hair);background:transparent;color:var(--muted);font-size:14px;cursor:pointer;transition:background-color .15s var(--ease)}
-.who:active{background:var(--pine2)}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:12px 4px 20px}
+.over{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--gold);margin:0 0 2px}
+.over svg{width:13px;height:13px}
+h1{font-weight:700;font-size:34px;line-height:1.1;margin:0;letter-spacing:.01em}
+.who{height:34px;padding:0 14px;border-radius:17px;border:0;background:var(--glass2);color:var(--text);font-size:15px;cursor:pointer;transition:opacity .2s}
+.who:active{opacity:.6}
 
-.vbar{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin:0 0 16px;border-radius:12px;background:var(--pine2)}
-.vbar button{height:36px;border:0;border-radius:8px;background:transparent;color:var(--muted);font-size:14px;cursor:pointer}
-.vbar button.on{background:var(--pine3);color:var(--cream)}
+.vbar{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:2px;margin:0 0 16px;border-radius:9px;background:rgba(118,118,128,.24)}
+.vbar button{height:30px;border:0;border-radius:7px;background:transparent;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:background-color .25s var(--spring)}
+.vbar button.on{background:rgba(255,255,255,.18);box-shadow:0 3px 8px rgba(0,0,0,.18)}
 
-/* Countdown */
-.panel{background:var(--pine2);border:1px solid var(--hair);border-radius:16px;padding:20px}
+.panel{background:var(--glass);border:.5px solid var(--hair);border-radius:22px;padding:20px;
+  -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}
 .panel+.panel,.panel+.sheetcal{margin-top:16px}
-.lbl{font-size:13px;color:var(--muted);margin:0 0 12px}
+.lbl{font-size:13px;font-weight:600;color:var(--text2);margin:0 0 8px}
 .cd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
-.cd div{text-align:center;border-left:1px solid var(--hair)}
-.cd div:first-child{border-left:0}
-.cd b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(32px,10vw,44px);line-height:1.1;font-variant-numeric:tabular-nums}
-.cd span{font-size:12px;color:var(--muted)}
-.xmas .cd b{font-size:clamp(26px,8vw,32px)}
-.heute{font-family:var(--serif);font-size:26px;margin:0}
+.cd div{text-align:center}
+.cd b{display:block;font-family:var(--round);font-weight:600;font-size:clamp(36px,11vw,48px);line-height:1.1;color:var(--gold);font-variant-numeric:tabular-nums}
+.cd span{font-size:12px;color:var(--text3)}
+.xmas .cd b{font-size:clamp(28px,9vw,36px)}
+.heute{font-weight:700;font-size:24px;margin:0;color:var(--gold)}
 
-.joke{margin:20px 0 0;padding-top:20px;border-top:1px solid var(--hair)}
-.joke p{margin:0;font-size:17px;line-height:1.45}
-.joke p.lbl{font-size:13px;color:var(--muted);margin:0 0 8px}
-.joke .pointe{margin-top:8px;color:var(--gold)}
+.joke{margin:20px 0 0;padding-top:16px;border-top:.5px solid var(--hair)}
+.joke p{margin:0;font-size:17px;line-height:1.4}
+.joke p.lbl{font-size:13px;color:var(--text2);margin:0 0 6px}
+.joke .pointe{margin-top:6px;color:var(--gold);font-weight:500}
 
-/* Überraschung: ein Zettel mit Wachssiegel */
-.surprise{display:flex;align-items:center;gap:16px;width:100%;margin-top:16px;padding:16px;border:0;border-radius:14px;
-  background:var(--paper);color:var(--ink);text-align:left;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.22);transition:transform .12s var(--ease)}
-.surprise:active{transform:scale(.98)}
-.surprise b{display:block;font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.2}
-.surprise span{font-size:14px;color:var(--ink2)}
-.surprise.done{background:var(--door);box-shadow:none}
-.seal{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:var(--paper);
-  background:radial-gradient(circle at 35% 30%,#bf4436,var(--red) 55%,var(--red2));box-shadow:inset 0 0 0 3px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.2)}
-.surprise.done .seal{background:var(--ink3)}
+/* Überraschung im Stil einer Mitteilung */
+.surprise{display:flex;align-items:center;gap:14px;width:100%;margin-top:16px;padding:14px 16px;border:.5px solid var(--hair);border-radius:22px;
+  background:var(--glass);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);color:var(--text);text-align:left;cursor:pointer;transition:transform .3s var(--spring)}
+.surprise:active{transform:scale(.97)}
+.surprise b{display:block;font-size:17px;font-weight:600;line-height:1.3}
+.surprise span{font-size:15px;color:var(--text2)}
+.surprise .chev{margin-left:auto;color:var(--text3);width:16px;height:16px;flex:none}
+.seal{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--gold);
+  background:linear-gradient(180deg,var(--fire),var(--fire2));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2)}
+.surprise.done .seal{background:linear-gradient(180deg,#2c6b4c,#1f5039);color:var(--text)}
 .seal svg{width:22px;height:22px}
-.shuffle{display:block;width:100%;margin-top:12px;height:40px;border:0;background:transparent;color:var(--faint);font-size:14px;cursor:pointer}
+.shuffle{display:block;width:100%;margin-top:8px;height:44px;border:0;background:transparent;color:var(--gold);font-size:15px;cursor:pointer}
 
-/* Kalenderbogen */
-.sheetcal{background:var(--paper);border-radius:16px;padding:12px;box-shadow:0 16px 40px rgba(0,0,0,.28)}
+/* Kalender */
+.sheetcal{padding:12px;border-radius:26px;background:var(--glass);border:.5px solid var(--goldHair)}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;grid-auto-flow:dense;gap:8px}
-.door{position:relative;min-height:84px;border-radius:8px;border:1.5px dashed var(--perf);background:var(--door);color:var(--ink);
-  display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;transition:transform .12s var(--ease),background-color .15s var(--ease)}
-.door:active{transform:scale(.96)}
-.door .nr{font-family:var(--serif);font-weight:500;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
-.door .typ{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:11px;color:var(--ink2)}
-.door.big{grid-column:span 2;grid-row:span 2}
-.door.big .nr{font-size:56px}
+.door{position:relative;min-height:84px;border-radius:16px;border:.5px solid var(--goldHair);
+  background:linear-gradient(180deg,var(--tile),var(--tile2));color:var(--gold);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0;cursor:pointer;transition:transform .35s var(--spring)}
+.door:active{transform:scale(.94)}
+.door .nr{font-family:var(--round);font-weight:600;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.door .typ{font-size:11px;font-weight:500;color:var(--text3)}
+.door.big{grid-column:span 2;grid-row:span 2;border-color:var(--gold)}
+.door.big .nr{font-size:60px}
+.door.big .star{width:28px;height:28px;color:var(--gold);margin-bottom:4px}
 .door.wide{grid-column:span 2}
-.door.locked{cursor:default;color:var(--ink3);border-color:rgba(31,43,37,.16)}
-.door.locked .typ{display:none}
-.door.today{background:var(--red);color:var(--paper);border-color:rgba(241,231,211,.55);box-shadow:0 4px 12px rgba(143,44,35,.35)}
-.door.today .typ{color:rgba(241,231,211,.8)}
-.door.done{background:var(--kraft);border-style:solid;border-color:rgba(31,43,37,.12);box-shadow:inset 0 3px 8px rgba(60,40,10,.25)}
-.door.done .nr{position:absolute;top:8px;left:10px;font-size:15px;color:rgba(31,43,37,.6)}
+.door.locked{cursor:default;color:rgba(224,189,110,.45);border-color:rgba(224,189,110,.18)}
+.door.locked .typ{visibility:hidden}
+.door.today{background:linear-gradient(180deg,var(--fire),var(--fire2));color:#fbe7b8;border-color:var(--gold);
+  box-shadow:0 0 0 1px rgba(224,189,110,.5),0 8px 24px rgba(142,33,27,.45)}
+.door.today .typ{color:rgba(251,231,184,.8)}
+.door.done{background:rgba(255,255,255,.03);color:var(--text3);border-color:rgba(224,189,110,.14)}
 .door.done .typ{display:none}
-.door.done::after{content:"";width:26px;height:26px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#bf4436,var(--red) 55%,var(--red2));box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.door.done::after{content:"";position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;
+  background:var(--gold) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1f17' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/12px no-repeat}
 
-/* Rangliste */
-.board{margin-top:32px;padding:0 4px}
-.board h2{font-family:var(--serif);font-weight:500;font-size:22px;margin:0 0 8px}
-.row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;min-height:44px;border-top:1px solid var(--hair);font-size:16px}
-.row .pl{color:var(--faint);font-variant-numeric:tabular-nums}
-.row .pk{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
-.row.me .nm{color:var(--gold)}
-.mode{margin-top:24px;text-align:center;font-size:12px;color:var(--faint)}
+/* Rangliste als gruppierte Liste */
+.board{margin-top:32px}
+.board h2{font-size:22px;font-weight:700;margin:0 4px 8px}
+#board{background:var(--glass);border:.5px solid var(--hair);border-radius:16px;overflow:hidden}
+.row{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;min-height:48px;padding:0 16px;font-size:17px;position:relative}
+.row+.row::before{content:"";position:absolute;top:0;left:50px;right:0;border-top:.5px solid var(--hair)}
+.row .pl{color:var(--text3);font-family:var(--round);font-variant-numeric:tabular-nums}
+.row:first-child .pl{color:var(--gold)}
+.row .pk{color:var(--text2);font-size:15px;font-variant-numeric:tabular-nums}
+.row.me .nm{font-weight:600}
+.mode{margin-top:24px;text-align:center;font-size:12px;color:var(--text3)}
 
-/* Blatt von unten */
-.overlay{position:fixed;inset:0;z-index:10;display:none;align-items:flex-end;justify-content:center;background:rgba(6,14,11,.6)}
+/* Blatt von unten, wie in iOS */
+.overlay{position:fixed;inset:0;z-index:10;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45)}
 .overlay.show{display:flex}
-.sheet{width:100%;max-width:520px;max-height:90vh;overflow:auto;background:var(--paper);color:var(--ink);
-  border-radius:20px 20px 0 0;padding:24px 20px calc(20px + env(safe-area-inset-bottom));animation:up .22s var(--ease)}
-@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
-.kicker{font-size:13px;color:var(--ink2);margin:0}
-.sheet h3{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.15;margin:4px 0 12px}
-.sheet p{font-size:17px;line-height:1.5;margin:0 0 16px}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border-radius:12px;border:0;
-  font-size:16px;font-weight:500;text-decoration:none;cursor:pointer;margin-top:8px;transition:background-color .15s var(--ease),transform .12s var(--ease)}
-.btn:active{transform:scale(.98)}
-.btn svg{width:18px;height:18px}
-.btn.wa{background:var(--wa);color:#fff}
-.btn.sec{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(31,43,37,.22)}
-.btn.sec.on{background:var(--ink);color:var(--paper);box-shadow:none}
-.btn.pri{background:var(--ink);color:var(--paper)}
-.btn.link{background:transparent;color:var(--ink2);height:44px;margin-top:4px}
-.opts{display:grid;gap:8px;margin:0 0 8px}
-.opt{min-height:52px;padding:12px 16px;border-radius:12px;border:1px solid rgba(31,43,37,.16);background:#fbf6ec;color:var(--ink);font-size:16px;text-align:left;cursor:pointer}
-.opt.right{border-color:#2f7a4f;background:#e2efe3}
-.opt.wrong{border-color:var(--red);background:#f5e1dc}
+.sheet{position:relative;width:100%;max-width:520px;max-height:90vh;overflow:auto;background:var(--sheet);color:var(--text);
+  border-radius:24px 24px 0 0;border-top:.5px solid var(--hair);padding:28px 20px calc(16px + env(safe-area-inset-bottom));animation:up .45s var(--spring)}
+.sheet::before{content:"";position:absolute;top:8px;left:50%;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:rgba(255,255,255,.25)}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.kicker{font-size:13px;font-weight:600;color:var(--gold);margin:0}
+.sheet h3{font-weight:700;font-size:28px;line-height:1.15;margin:4px 0 12px}
+.sheet p{font-size:17px;line-height:1.47;margin:0 0 20px;color:var(--text)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border-radius:14px;border:0;
+  font-size:17px;font-weight:600;text-decoration:none;cursor:pointer;margin-top:8px;transition:opacity .2s,transform .3s var(--spring)}
+.btn:active{transform:scale(.98);opacity:.85}
+.btn svg{width:19px;height:19px}
+.btn.wa{background:var(--gold);color:#1a140a}
+.btn.sec{background:var(--glass2);color:var(--text)}
+.btn.sec.on{background:#245c41;color:var(--text)}
+.btn.pri{background:var(--gold);color:#1a140a}
+.btn.link{background:transparent;color:var(--text2);height:44px;font-weight:500}
+.opts{border-radius:14px;overflow:hidden;background:var(--glass2);margin:0 0 8px}
+.opt{display:block;width:100%;min-height:50px;padding:12px 16px;border:0;background:transparent;color:var(--text);font-size:17px;text-align:left;cursor:pointer;position:relative}
+.opt+.opt::before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--hair)}
+.opt:active{background:rgba(255,255,255,.06)}
+.opt.right{background:rgba(52,140,92,.35)}
+.opt.wrong{background:rgba(184,50,42,.35)}
 .opt:disabled{cursor:default}
-.res{font-size:16px;line-height:1.5;margin:8px 0 0}
-.res b{font-weight:600}
-.res.sm{font-size:14px;color:var(--ink2);margin:4px 0 8px}
-.dabei{font-size:14px;color:var(--ink2);margin:12px 0 0}
-.namebox input{width:100%;height:52px;font:inherit;font-size:18px;padding:0 16px;border-radius:12px;border:1px solid rgba(31,43,37,.22);background:#fbf6ec;color:var(--ink);margin:0 0 8px}
+.res{font-size:17px;line-height:1.47;margin:12px 0 0}
+.res b{font-weight:600;color:var(--gold)}
+.res.sm{font-size:15px;color:var(--text2);margin:4px 0 8px}
+.dabei{font-size:15px;color:var(--text2);margin:16px 0 0}
+.namebox input{width:100%;height:50px;font:inherit;font-size:17px;padding:0 16px;border-radius:14px;border:0;background:var(--glass2);color:var(--text);margin:0 0 8px}
+.namebox input::placeholder{color:var(--text3)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+
 </head>
 <body>
 <canvas id="snow"></canvas>
 <main>
   <header>
-    <div><p class="over">Familie · Advent 2026</p><h1 id="titel">24 Türchen</h1></div>
+    <div><p class="over"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>Familie · Advent 2026</p><h1 id="titel">24 Türchen</h1></div>
     <button class="who" id="whoBtn"></button>
   </header>
   <div class="vbar" id="vbar" hidden></div>
@@ -281,6 +294,8 @@ function heuteNr(){ const t=berlinHeute(); return (t.y===2026&&t.m===12&&t.d<=24
 const I = {
   gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  star:'<svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>',
+  chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
   chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>',
 };
 
@@ -365,7 +380,7 @@ function render(){
     const t = TAGE[nr-1], locked = nr > offen, done = !locked && isDone(nr);
     const cls = ["door", nr===24&&"big", nr===1&&"wide", locked&&"locked", nr===heute&&!done&&"today", done&&"done"].filter(Boolean).join(" ");
     const typ = nr===24 ? "Heiligabend" : TYP_LABEL[t.typ];
-    return `<button class="${cls}" data-nr="${nr}" ${locked?"disabled":""} aria-label="Türchen ${nr}${locked?", noch zu":done?", erledigt":""}"><span class="nr">${nr}</span><span class="typ">${typ}</span></button>`;
+    return `<button class="${cls}" data-nr="${nr}" ${locked?"disabled":""} aria-label="Türchen ${nr}${locked?", noch zu":done?", erledigt":""}">${nr===24&&!done?I.star:""}<span class="nr">${nr}</span><span class="typ">${typ}</span></button>`;
   }).join("");
   document.querySelectorAll("#grid .door:not([disabled])").forEach(b => b.onclick = () => {
     const nr = +b.dataset.nr; NAME ? openDoor(nr) : askName(()=>openDoor(nr));
@@ -412,8 +427,8 @@ function renderPre(){
   if (NAME && heute>=24 && heute<=30){
     const i = (surpriseFor(NAME, heute) + PREVIEW_SHIFT) % BONUS.length, id = "b"+(i+1), b = BONUS[i];
     extra = isDone(id)
-      ? `<button class="surprise done" data-id="${id}"><span class="seal">${I.check}</span><span><b>Heute erledigt</b><span>Morgen gibt's die nächste</span></span></button>`
-      : `<button class="surprise" data-id="${id}"><span class="seal">${I.gift}</span><span><b>Deine Überraschung</b><span>${VORSCHAU?esc(b.titel)+" · "+(i+1)+"/"+BONUS.length:"Für heute"}</span></span></button>`;
+      ? `<button class="surprise done" data-id="${id}"><span class="seal">${I.check}</span><span><b>Heute erledigt</b><span>Morgen gibt's die nächste</span></span>${I.chev}</button>`
+      : `<button class="surprise" data-id="${id}"><span class="seal">${I.gift}</span><span><b>Deine Überraschung</b><span>Für heute</span></span>${I.chev}</button>`;
     if (VORSCHAU) extra += `<button class="shuffle" id="shuffle">Andere Überraschung zeigen</button>`;
   }
   box.innerHTML = `
