@@ -202,7 +202,15 @@ h1{font-weight:700;font-size:34px;line-height:1.1;margin:0;letter-spacing:.01em}
       Ohne Config läuft alles lokal (nur auf dem eigenen Handy).
    2) Vorschau: index.html?vorschau=1 zum Testen.
    ========================================================= */
-const FIREBASE_CONFIG = null;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBg96ecWgDNaKUbstqTd1sxUfuzpKBwss4",
+  authDomain: "familien-advent.firebaseapp.com",
+  databaseURL: "https://familien-advent-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "familien-advent",
+  storageBucket: "familien-advent.firebasestorage.app",
+  messagingSenderId: "480659357751",
+  appId: "1:480659357751:web:df0cbdd3a4f355819c7fb2"
+};
 /* Beispiel:
 const FIREBASE_CONFIG = {
   apiKey: "...",
@@ -335,7 +343,7 @@ const LS_KEY = "advent2026-local";
 const modeEl = document.getElementById("mode");
 
 async function initStore(){
-  if (FIREBASE_CONFIG){
+  if (FIREBASE_CONFIG && !VORSCHAU){
     try{
       const v = "10.12.2";
       const {initializeApp} = await import(`https://www.gstatic.com/firebasejs/${v}/firebase-app.js`);
@@ -347,7 +355,7 @@ async function initStore(){
     }catch(e){ console.error(e); modeEl.textContent = "Keine Verbindung – gerade nur auf diesem Handy"; }
   }
   try{ STATE = JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ STATE = {}; }
-  if (!FIREBASE_CONFIG && VORSCHAU) modeEl.textContent = "Vorschau · ohne Firebase, nur auf diesem Handy";
+  if (VORSCHAU) modeEl.textContent = "Vorschau · Testklicks bleiben auf diesem Handy";
 }
 function save(path, value){
   if (fb){ fb.db.set(fb.db.ref(fb.d, `${DB_PATH}/${path}`), value); return; }

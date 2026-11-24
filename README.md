@@ -32,7 +32,7 @@ Unten in der App gibt es den Knopf „Als App speichern“ mit der Anleitung fü
 }
 ```
 
-Ohne Config läuft alles nur lokal auf dem jeweiligen Handy.
+Ohne Config läuft alles nur lokal auf dem jeweiligen Handy. Im Vorschau-Modus (`?vorschau=1`) wird nie in die Datenbank geschrieben.
 
 ## Inhalte ändern
 
