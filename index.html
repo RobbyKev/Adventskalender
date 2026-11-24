@@ -46,6 +46,17 @@
   .row:first-of-type{border-top:0}
   .row span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
   .empty{color:var(--muted);font-size:14px}
+  .pre{background:linear-gradient(160deg,#24483e,#1a3731);border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-bottom:18px}
+  .pre .lbl{font-size:13px;color:var(--gold);margin:0 0 8px}
+  .cd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;text-align:center}
+  .cd div{background:rgba(15,31,26,.55);border-radius:12px;padding:10px 0}
+  .cd b{display:block;font-family:Georgia,serif;font-weight:normal;font-size:clamp(26px,8vw,36px);color:var(--cream);font-variant-numeric:tabular-nums}
+  .cd span{font-size:12px;color:var(--muted)}
+  .spruch{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:16px;line-height:1.45}
+  .spruch small{display:block;font-size:12px;color:var(--gold);margin-bottom:4px}
+  .spruch .pointe{display:block;margin-top:6px;color:var(--gold2)}
+  .warm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:10px}
+  .warm .door{aspect-ratio:1/1;font-size:22px;background:#2c5246}
   .mode{margin-top:14px;text-align:center;font-size:12px;color:var(--muted)}
   /* Sheet */
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10;display:none;align-items:flex-end;justify-content:center}
@@ -80,6 +91,7 @@
     <button class="who" id="whoBtn"></button>
   </header>
   <p class="hint" id="hint"></p>
+  <section class="pre" id="pre" hidden></section>
   <div class="grid" id="grid"></div>
 
   <section class="board">
@@ -152,6 +164,31 @@ const TAGE = [
   {typ:"foto", titel:"Heiligabend", text:"Schick ein Foto von eurem Baum oder Tisch – und einen Wunsch für nächstes Jahr. Frohe Weihnachten! 🎄"},
 ];
 
+/* Aufwärmrunde: vor dem 1.12. schon offen */
+const BONUS = [
+  {typ:"foto", titel:"Erste Deko", text:"Zeig deine erste Weihnachtsdeko – oder das Chaos davor. Beides zählt."},
+  {typ:"quiz", titel:"Schätzfrage", text:"Der allererste Adventskranz von 1839 – wie viele Kerzen hatte der?",
+    optionen:["4","12","24","31"], richtig:2, info:"24 Kerzen: 20 kleine rote für die Werktage und 4 große weiße für die Sonntage."},
+  {typ:"frage", titel:"Wunsch", text:"Was wünschst du dir dieses Jahr – nicht zum Auspacken, sondern zum Erleben?"},
+];
+/* Witz oder Spruch für jeden Tag bis zum 1.12. (Tag im November → Text) */
+const SPRUECHE = {
+  24:["Warum sind Weihnachtsbäume so schlecht im Stricken?","Sie lassen ständig die Nadeln fallen."],
+  25:["Was sagt ein Schneemann zum anderen?","„Riechst du auch Möhren?“"],
+  26:["Wie heißt die Frau vom Weihnachtsmann?","Mary Christmas."],
+  27:["Wie nennt man einen Weihnachtsmann, der Angst vor engen Kaminen hat?","Klaustrophobi-Klaus."],
+  28:["Vorfreude ist die schönste Freude.",""],
+  29:["Heute ist der 1. Advent – erste Kerze an!","Erst eine Kerze, dann zwei, dann drei, dann vier …"],
+  30:["Welche Türchen bleiben heute noch zu?","Alle 24. Aber nur noch bis Mitternacht."],
+};
+const SPRUCH_RESERVE = [
+  ["Was essen Schneemänner am liebsten?","Eisbein."],
+  ["Warum ist der Schneemann so entspannt?","Er weiß: Irgendwann löst sich alles von selbst."],
+  ["Warum gehen Engel nie ins Fitnessstudio?","Sie sind schon himmlisch in Form."],
+];
+const getItem = id => String(id).startsWith("b") ? BONUS[+String(id).slice(1)-1] : TAGE[id-1];
+const labelOf = id => String(id).startsWith("b") ? `Aufwärmrunde ${String(id).slice(1)}` : `Türchen ${id}`;
+const START_MS = Date.UTC(2026,10,30,23,0,0); // 1.12.2026 00:00 in Berlin
 const TYP_LABEL = {frage:"Frage", quiz:"Quiz", foto:"Foto", aufgabe:"Aufgabe"};
 // feste, gemischte Anordnung der Türchen
 const REIHENFOLGE = [7,15,2,21,11,24,4,18,13,1,20,9,16,6,23,10,3,19,12,22,8,14,5,17];
@@ -240,13 +277,12 @@ function render(){
   const hint = document.getElementById("hint");
   if (offen===0){
     const t = berlinHeute();
-    const start = Date.UTC(2026,11,1), now = Date.UTC(t.y,t.m-1,t.d);
-    const n = Math.round((start-now)/864e5);
-    hint.textContent = `Noch ${n} ${n===1?"Tag":"Tage"} bis zum ersten Türchen. Am 1. Dezember geht's los.`;
+    hint.textContent = "Am 1. Dezember geht das erste Türchen auf. Bis dahin gibt's jeden Tag einen Witz – und die Aufwärmrunde kannst du schon machen.";
   } else if (heute) {
     hint.textContent = `Heute ist Türchen ${heute} dran. Verpasste Türchen kannst du jederzeit nachholen.`;
   } else hint.textContent = VORSCHAU ? "Vorschau-Modus: alle Türchen offen." : "Alle Türchen sind offen. Frohe Weihnachten!";
 
+  renderPre();
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   REIHENFOLGE.forEach(nr => {
@@ -262,10 +298,42 @@ function render(){
   renderBoard();
 }
 
+function renderPre(){
+  const pre = document.getElementById("pre");
+  if (Date.now() >= START_MS){ pre.hidden = true; pre.innerHTML = ""; return; }
+  pre.hidden = false;
+  const t = berlinHeute();
+  const sp = (t.m===11 && SPRUECHE[t.d]) || SPRUCH_RESERVE[t.d % SPRUCH_RESERVE.length];
+  pre.innerHTML = `
+    <p class="lbl">Noch bis zum ersten Türchen</p>
+    <div class="cd" id="cd"></div>
+    <p class="spruch"><small>Witz des Tages</small>${esc(sp[0])}${sp[1]?`<span class="pointe">${esc(sp[1])}</span>`:""}</p>
+    <p class="lbl" style="margin-top:16px">Aufwärmrunde – schon offen</p>
+    <div class="warm">${BONUS.map((b,i)=>{
+      const id="b"+(i+1), d=tagData(id);
+      const done = NAME && d.dabei && d.dabei[safeKey(NAME)];
+      return `<button class="door${done?" done":""}" data-id="${id}">★<span class="tag">${TYP_LABEL[b.typ]}</span></button>`;
+    }).join("")}</div>`;
+  pre.querySelectorAll(".warm .door").forEach(b => b.onclick = () => {
+    const id = b.dataset.id; NAME ? openDoor(id) : askName(()=>openDoor(id));
+  });
+  tickCountdown();
+}
+function tickCountdown(){
+  const el = document.getElementById("cd"); if(!el) return;
+  let ms = START_MS - Date.now();
+  if (ms <= 0){ render(); return; }
+  const tg=Math.floor(ms/864e5), h=Math.floor(ms/36e5)%24, m=Math.floor(ms/6e4)%60, s=Math.floor(ms/1e3)%60;
+  const pad = n => String(n).padStart(2,"0");
+  el.innerHTML = [[tg,tg===1?"Tag":"Tage"],[pad(h),"Std"],[pad(m),"Min"],[pad(s),"Sek"]]
+    .map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join("");
+}
+setInterval(tickCountdown, 1000);
+
 function renderBoard(){
   const punkte = {}, tage = STATE.tage || {};
   Object.entries(tage).forEach(([nr, d]) => {
-    const t = TAGE[nr-1]; if(!t || t.typ!=="quiz" || !d.quiz) return;
+    const t = getItem(nr); if(!t || t.typ!=="quiz" || !d.quiz) return;
     Object.entries(d.quiz).forEach(([n, idx]) => {
       punkte[n] = (punkte[n]||0) + (idx===t.richtig?1:0);
     });
@@ -282,11 +350,11 @@ function renderBoard(){
 
 /* ======================= TÜRCHEN ======================= */
 function openDoor(nr){
-  const t = TAGE[nr-1], d = tagData(nr), me = safeKey(NAME);
+  const t = getItem(nr), d = tagData(nr), me = safeKey(NAME);
   const dabeiNamen = Object.keys(d.dabei||{});
   const istDabei = !!(d.dabei && d.dabei[me]);
   const s = document.getElementById("sheet");
-  let body = `<div class="kicker">Türchen ${nr} · ${TYP_LABEL[t.typ]}</div>
+  let body = `<div class="kicker">${labelOf(nr)} · ${TYP_LABEL[t.typ]}</div>
     <h3>${esc(t.titel)}</h3><p>${esc(t.text)}</p>`;
 
   if (t.typ==="quiz"){
@@ -325,8 +393,8 @@ function openDoor(nr){
     let msg;
     if (t.typ==="quiz"){
       const meine = (tagData(nr).quiz||{})[me];
-      msg = `🎄 Türchen ${nr}: ${t.titel}\n${meine===t.richtig?"Hab's richtig! 😎":"Lag daneben 🙈"} Wer noch?`;
-    } else msg = `🎄 Türchen ${nr} – ${t.titel}\n${t.text}\n\n➜ `;
+      msg = `🎄 ${labelOf(nr)}: ${t.titel}\n${meine===t.richtig?"Hab's richtig! 😎":"Lag daneben 🙈"} Wer noch?`;
+    } else msg = `🎄 ${labelOf(nr)} – ${t.titel}\n${t.text}\n\n➜ `;
     wa.href = "https://wa.me/?text=" + encodeURIComponent(msg);
     wa.target = "_blank"; wa.rel = "noopener";
   }
