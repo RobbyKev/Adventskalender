@@ -3,124 +3,162 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f1f1a">
+<meta name="theme-color" content="#12261f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Familien-Adventskalender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0f1f1a; --bg2:#16302a; --card:#1d3b33; --gold:#e8b85c; --gold2:#f3d28f;
-    --red:#c2463d; --cream:#f6efe2; --muted:#a9bcb3; --line:rgba(246,239,226,.12);
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;background:var(--bg);color:var(--cream);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-  body{min-height:100vh;padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom));
-    background:radial-gradient(120% 60% at 50% 0%,#1f4238 0%,var(--bg) 60%)}
-  #snow{position:fixed;inset:0;pointer-events:none;z-index:0}
-  main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:20px 16px}
-  header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 2px 18px}
-  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:30px;line-height:1.05;margin:0}
-  h1 small{display:block;font-size:13px;letter-spacing:.02em;color:var(--gold);font-family:inherit;margin-bottom:4px}
-  .who{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;
-    padding:7px 12px;font-size:13px;white-space:nowrap}
-  .hint{font-size:14px;color:var(--muted);margin:0 2px 16px;line-height:1.4}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-  .door{position:relative;aspect-ratio:1/1.12;border-radius:12px;border:1px solid var(--line);
-    background:var(--card);color:var(--cream);font-family:Georgia,serif;font-size:26px;
-    display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;
-    transition:transform .15s ease}
-  .door:active{transform:scale(.96)}
-  .door.big{grid-column:span 2;aspect-ratio:auto}
-  .door.locked{background:var(--bg2);color:rgba(246,239,226,.35);cursor:default}
-  .door.today{background:var(--red);border-color:var(--gold);box-shadow:0 0 0 2px rgba(232,184,92,.35)}
-  .door.done{background:#2a4a40}
-  .door.done::after{content:"✓";position:absolute;top:6px;right:8px;font-size:13px;color:var(--gold);font-family:sans-serif}
-  .door .tag{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:10px;
-    font-family:sans-serif;letter-spacing:.04em;color:var(--gold2);opacity:.85}
-  .door.locked .tag{display:none}
-  section.board{margin-top:26px;background:rgba(29,59,51,.6);border:1px solid var(--line);
-    border-radius:14px;padding:14px 16px}
-  section.board h2{font-size:15px;margin:0 0 10px;color:var(--gold);font-weight:600}
-  .row{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line);font-size:15px}
-  .row:first-of-type{border-top:0}
-  .row span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
-  .empty{color:var(--muted);font-size:14px}
-  .pre{background:linear-gradient(160deg,#24483e,#1a3731);border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-bottom:18px}
-  .pre .lbl{font-size:13px;color:var(--gold);margin:0 0 8px}
-  .cd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;text-align:center}
-  .cd div{background:rgba(15,31,26,.55);border-radius:12px;padding:10px 0}
-  .cd b{display:block;font-family:Georgia,serif;font-weight:normal;font-size:clamp(26px,8vw,36px);color:var(--cream);font-variant-numeric:tabular-nums}
-  .cd span{font-size:12px;color:var(--muted)}
-  .spruch{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:16px;line-height:1.45}
-  .spruch small{display:block;font-size:12px;color:var(--gold);margin-bottom:4px}
-  .spruch .pointe{display:block;margin-top:6px;color:var(--gold2)}
-  .xmas{padding:14px 16px}
-  .xmas .cd b{font-size:clamp(22px,7vw,30px)}
-  .xmas .heute{font-family:Georgia,serif;font-size:24px;margin:0}
-  .surprise{display:block;width:100%;text-align:left;margin-top:16px;border:1px solid var(--gold);background:var(--red);
-    color:var(--cream);border-radius:14px;padding:14px 16px;font-size:16px;line-height:1.35;cursor:pointer}
-  .surprise b{display:block;font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:2px}
-  .surprise.old{background:#2c5246;border-color:var(--line)}
-  .teaser{margin:16px 0 0;font-size:14px;color:var(--muted)}
-  .vbar{display:flex;gap:8px;margin:0 0 14px}
-  .vbar button{flex:1;min-height:40px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:14px}
-  .vbar button.on{background:var(--gold);color:#1d2b26;border-color:var(--gold)}
-  .mode{margin-top:14px;text-align:center;font-size:12px;color:var(--muted)}
-  /* Sheet */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10;display:none;align-items:flex-end;justify-content:center}
-  .overlay.show{display:flex}
-  .sheet{width:100%;max-width:560px;max-height:88vh;overflow:auto;background:var(--cream);color:#1d2b26;
-    border-radius:20px 20px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));
-    animation:up .25s ease}
-  @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-  .sheet .kicker{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--red);font-weight:700}
-  .sheet h3{font-family:Georgia,serif;font-weight:normal;font-size:24px;margin:6px 0 12px;line-height:1.2}
-  .sheet p{font-size:16px;line-height:1.5;margin:0 0 14px}
-  .btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:600;
-    margin-top:10px;cursor:pointer;text-align:center;text-decoration:none}
-  .btn.wa{background:#1f8f4e;color:#fff}
-  .btn.ok{background:#1d3b33;color:var(--cream)}
-  .btn.ghost{background:transparent;color:#55655f}
-  .opts{display:grid;gap:8px;margin:6px 0 10px}
-  .opt{border:1.5px solid #d6cbb5;background:#fff;border-radius:12px;padding:13px 14px;font-size:16px;text-align:left;color:#1d2b26}
-  .opt.right{border-color:#1f8f4e;background:#e3f3e8}
-  .opt.wrong{border-color:var(--red);background:#f8e3e0}
-  .opt:disabled{opacity:1}
-  .result{font-size:15px;margin:6px 0 4px}
-  .dabei{font-size:14px;color:#55655f;margin-top:14px;line-height:1.4}
-  .namebox input{width:100%;font-size:18px;padding:13px;border-radius:12px;border:1.5px solid #d6cbb5;margin:4px 0 4px}
+/* Richtung: ein Papp-Adventskalender auf Tannengrün.
+   Ruhige grüne Fläche, ein cremefarbener Kalenderbogen als Herzstück,
+   perforierte Türchen, Wachssiegel-Rot für heute und erledigt. */
+:root{
+  --pine:#12261f; --pine2:#1a332a; --pine3:#24443a;
+  --cream:#f3ead8; --muted:#a3b2a9; --faint:#73867b; --hair:rgba(243,234,216,.10);
+  --paper:#f1e7d3; --door:#e8dabf; --kraft:#cdb185; --ink:#1f2b25; --ink2:#56635b; --ink3:#8b9188;
+  --perf:rgba(31,43,37,.30); --red:#a8362b; --red2:#8f2c23; --gold:#d6b26a; --wa:#1f6b45;
+  --serif:"Fraunces",Georgia,serif; --sans:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--pine);color:var(--cream);font:16px/1.5 var(--sans)}
+body{min-height:100vh;padding:env(safe-area-inset-top) 0 calc(32px + env(safe-area-inset-bottom));overflow-x:clip}
+button{font:inherit;color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+#snow{position:fixed;inset:0;pointer-events:none;z-index:0}
+main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:24px 16px}
+
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 4px 24px}
+.over{font-size:13px;color:var(--muted);margin:0 0 4px}
+h1{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1.05;margin:0;letter-spacing:-.01em}
+.who{height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--hair);background:transparent;color:var(--muted);font-size:14px;cursor:pointer;transition:background-color .15s var(--ease)}
+.who:active{background:var(--pine2)}
+
+.vbar{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin:0 0 16px;border-radius:12px;background:var(--pine2)}
+.vbar button{height:36px;border:0;border-radius:8px;background:transparent;color:var(--muted);font-size:14px;cursor:pointer}
+.vbar button.on{background:var(--pine3);color:var(--cream)}
+
+/* Countdown */
+.panel{background:var(--pine2);border:1px solid var(--hair);border-radius:16px;padding:20px}
+.panel+.panel,.panel+.sheetcal{margin-top:16px}
+.lbl{font-size:13px;color:var(--muted);margin:0 0 12px}
+.cd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.cd div{text-align:center;border-left:1px solid var(--hair)}
+.cd div:first-child{border-left:0}
+.cd b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(32px,10vw,44px);line-height:1.1;font-variant-numeric:tabular-nums}
+.cd span{font-size:12px;color:var(--muted)}
+.xmas .cd b{font-size:clamp(26px,8vw,32px)}
+.heute{font-family:var(--serif);font-size:26px;margin:0}
+
+.joke{margin:20px 0 0;padding-top:20px;border-top:1px solid var(--hair)}
+.joke p{margin:0;font-size:17px;line-height:1.45}
+.joke p.lbl{font-size:13px;color:var(--muted);margin:0 0 8px}
+.joke .pointe{margin-top:8px;color:var(--gold)}
+
+/* Überraschung: ein Zettel mit Wachssiegel */
+.surprise{display:flex;align-items:center;gap:16px;width:100%;margin-top:16px;padding:16px;border:0;border-radius:14px;
+  background:var(--paper);color:var(--ink);text-align:left;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.22);transition:transform .12s var(--ease)}
+.surprise:active{transform:scale(.98)}
+.surprise b{display:block;font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.2}
+.surprise span{font-size:14px;color:var(--ink2)}
+.surprise.done{background:var(--door);box-shadow:none}
+.seal{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:var(--paper);
+  background:radial-gradient(circle at 35% 30%,#bf4436,var(--red) 55%,var(--red2));box-shadow:inset 0 0 0 3px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.2)}
+.surprise.done .seal{background:var(--ink3)}
+.seal svg{width:22px;height:22px}
+.shuffle{display:block;width:100%;margin-top:12px;height:40px;border:0;background:transparent;color:var(--faint);font-size:14px;cursor:pointer}
+
+/* Kalenderbogen */
+.sheetcal{background:var(--paper);border-radius:16px;padding:12px;box-shadow:0 16px 40px rgba(0,0,0,.28)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;grid-auto-flow:dense;gap:8px}
+.door{position:relative;min-height:84px;border-radius:8px;border:1.5px dashed var(--perf);background:var(--door);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;transition:transform .12s var(--ease),background-color .15s var(--ease)}
+.door:active{transform:scale(.96)}
+.door .nr{font-family:var(--serif);font-weight:500;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.door .typ{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:11px;color:var(--ink2)}
+.door.big{grid-column:span 2;grid-row:span 2}
+.door.big .nr{font-size:56px}
+.door.wide{grid-column:span 2}
+.door.locked{cursor:default;color:var(--ink3);border-color:rgba(31,43,37,.16)}
+.door.locked .typ{display:none}
+.door.today{background:var(--red);color:var(--paper);border-color:rgba(241,231,211,.55);box-shadow:0 4px 12px rgba(143,44,35,.35)}
+.door.today .typ{color:rgba(241,231,211,.8)}
+.door.done{background:var(--kraft);border-style:solid;border-color:rgba(31,43,37,.12);box-shadow:inset 0 3px 8px rgba(60,40,10,.25)}
+.door.done .nr{position:absolute;top:8px;left:10px;font-size:15px;color:rgba(31,43,37,.6)}
+.door.done .typ{display:none}
+.door.done::after{content:"";width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#bf4436,var(--red) 55%,var(--red2));box-shadow:0 1px 2px rgba(0,0,0,.25)}
+
+/* Rangliste */
+.board{margin-top:32px;padding:0 4px}
+.board h2{font-family:var(--serif);font-weight:500;font-size:22px;margin:0 0 8px}
+.row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;min-height:44px;border-top:1px solid var(--hair);font-size:16px}
+.row .pl{color:var(--faint);font-variant-numeric:tabular-nums}
+.row .pk{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.row.me .nm{color:var(--gold)}
+.mode{margin-top:24px;text-align:center;font-size:12px;color:var(--faint)}
+
+/* Blatt von unten */
+.overlay{position:fixed;inset:0;z-index:10;display:none;align-items:flex-end;justify-content:center;background:rgba(6,14,11,.6)}
+.overlay.show{display:flex}
+.sheet{width:100%;max-width:520px;max-height:90vh;overflow:auto;background:var(--paper);color:var(--ink);
+  border-radius:20px 20px 0 0;padding:24px 20px calc(20px + env(safe-area-inset-bottom));animation:up .22s var(--ease)}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.kicker{font-size:13px;color:var(--ink2);margin:0}
+.sheet h3{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.15;margin:4px 0 12px}
+.sheet p{font-size:17px;line-height:1.5;margin:0 0 16px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border-radius:12px;border:0;
+  font-size:16px;font-weight:500;text-decoration:none;cursor:pointer;margin-top:8px;transition:background-color .15s var(--ease),transform .12s var(--ease)}
+.btn:active{transform:scale(.98)}
+.btn svg{width:18px;height:18px}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.sec{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(31,43,37,.22)}
+.btn.sec.on{background:var(--ink);color:var(--paper);box-shadow:none}
+.btn.pri{background:var(--ink);color:var(--paper)}
+.btn.link{background:transparent;color:var(--ink2);height:44px;margin-top:4px}
+.opts{display:grid;gap:8px;margin:0 0 8px}
+.opt{min-height:52px;padding:12px 16px;border-radius:12px;border:1px solid rgba(31,43,37,.16);background:#fbf6ec;color:var(--ink);font-size:16px;text-align:left;cursor:pointer}
+.opt.right{border-color:#2f7a4f;background:#e2efe3}
+.opt.wrong{border-color:var(--red);background:#f5e1dc}
+.opt:disabled{cursor:default}
+.res{font-size:16px;line-height:1.5;margin:8px 0 0}
+.res b{font-weight:600}
+.res.sm{font-size:14px;color:var(--ink2);margin:4px 0 8px}
+.dabei{font-size:14px;color:var(--ink2);margin:12px 0 0}
+.namebox input{width:100%;height:52px;font:inherit;font-size:18px;padding:0 16px;border-radius:12px;border:1px solid rgba(31,43,37,.22);background:#fbf6ec;color:var(--ink);margin:0 0 8px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <canvas id="snow"></canvas>
 <main>
   <header>
-    <h1><small>Familie · Advent 2026</small><span id="titel">24 Türchen</span></h1>
+    <div><p class="over">Familie · Advent 2026</p><h1 id="titel">24 Türchen</h1></div>
     <button class="who" id="whoBtn"></button>
   </header>
   <div class="vbar" id="vbar" hidden></div>
-  <p class="hint" id="hint"></p>
-  <section class="pre" id="pre" hidden></section>
-  <section class="pre xmas" id="xmas" hidden><p class="lbl">Noch bis Heiligabend</p><div class="cd" id="cdX"></div></section>
-  <div class="grid" id="grid"></div>
-
-  <section class="board" id="boardBox">
-    <h2>Quiz-Rangliste</h2>
+  <section class="panel" id="pre" hidden></section>
+  <section class="panel xmas" id="xmas" hidden><p class="lbl">Bis Heiligabend</p><div class="cd" id="cdX"></div></section>
+  <div class="sheetcal" id="cal"><div class="grid" id="grid"></div></div>
+  <section class="board" id="boardBox" hidden>
+    <h2>Rangliste</h2>
     <div id="board"></div>
   </section>
   <div class="mode" id="mode"></div>
 </main>
 
-<div class="overlay" id="overlay"><div class="sheet" id="sheet"></div></div>
+<div class="overlay" id="overlay"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 
 <script>
+{
 /* =========================================================
    EINSTELLUNGEN
    1) Firebase: Projekt anlegen → Realtime Database aktivieren →
       Web-App registrieren → Config hier einfügen.
       Ohne Config läuft alles lokal (nur auf dem eigenen Handy).
-   2) Vorschau: index.html?vorschau=1 öffnet alle Türchen zum Testen.
+   2) Vorschau: index.html?vorschau=1 zum Testen.
    ========================================================= */
 const FIREBASE_CONFIG = null;
 /* Beispiel:
@@ -147,8 +185,8 @@ const TAGE = [
   {typ:"foto", titel:"Familie an der Wand", text:"Welches Familienfoto hängt oder steht bei dir zu Hause? Fotografier es und schick es in die Gruppe."},
   {typ:"quiz", titel:"Schätzfrage", text:"Wie alt ist ein Weihnachtsbaum ungefähr, wenn er verkauft wird?",
     optionen:["ca. 2 Jahre","ca. 5 Jahre","ca. 10 Jahre","ca. 20 Jahre"], richtig:2, info:"Rund 8 bis 12 Jahre steht so ein Baum auf dem Feld, bis er bei uns im Wohnzimmer landet."},
-  {typ:"foto", titel:"Nikolaus-Schuh", text:"Heute ist Nikolaus! Zeig den Schuh, den du rausgestellt hast – oder rausgestellt hättest."},
-  {typ:"frage", titel:"Familien-Schätzfrage", text:"Wie alt sind alle in dieser Gruppe zusammen? Nicht rechnen, nur schätzen – und dann eure Zahl in die Gruppe! Wer am nächsten dran ist, gewinnt."},
+  {typ:"foto", titel:"Nikolaus-Schuh", text:"Heute ist Nikolaus. Zeig den Schuh, den du rausgestellt hast – oder rausgestellt hättest."},
+  {typ:"frage", titel:"Familien-Schätzfrage", text:"Wie alt sind alle in dieser Gruppe zusammen? Nicht rechnen, nur schätzen – und dann eure Zahl in die Gruppe. Wer am nächsten dran ist, gewinnt."},
   {typ:"foto", titel:"Sockencheck", text:"Zeig deine Socken. Jetzt. Keine Ausreden."},
   {typ:"quiz", titel:"Allein zu Haus", text:"In welchem Jahr kam „Kevin – Allein zu Haus“ ins Kino?",
     optionen:["1987","1990","1993","1996"], richtig:1, info:"1990 – und läuft seitdem jedes Jahr wieder."},
@@ -159,7 +197,7 @@ const TAGE = [
     optionen:["22 Tage","24 Tage","26 Tage","28 Tage"], richtig:2, info:"26 Tage: Der 1. Advent war am 29. November. Der Kalender hat trotzdem nur 24 Türchen."},
   {typ:"foto", titel:"Lichtertag", text:"Heute ist Luciafest, das Fest der Lichter. Schick ein Foto von einer Kerze oder Lichterkette bei dir."},
   {typ:"foto", titel:"Zeitreise", text:"Such ein altes Weihnachtsfoto raus (gern peinlich) und schick es in die Gruppe. Die anderen raten, wann es war."},
-  {typ:"foto", titel:"Mützen-Selfie", text:"Selfie mit Weihnachtsmütze! Keine da? Dann eben irgendwas anderes auf dem Kopf."},
+  {typ:"foto", titel:"Mützen-Selfie", text:"Selfie mit Weihnachtsmütze. Keine da? Dann eben irgendwas anderes auf dem Kopf."},
   {typ:"quiz", titel:"Schätzfrage", text:"Wie viele Weihnachtsbäume werden in Deutschland pro Jahr ungefähr verkauft?",
     optionen:["ca. 5 Millionen","ca. 10 Millionen","ca. 25 Millionen","ca. 50 Millionen"], richtig:2, info:"Rund 23 bis 25 Millionen – die meisten davon Nordmanntannen."},
   {typ:"quiz", titel:"Schätzfrage", text:"Wie viele Kalorien hat ungefähr eine Tasse Glühwein (0,2 l)?",
@@ -171,8 +209,8 @@ const TAGE = [
   {typ:"quiz", titel:"Sonnenwende", text:"Was ist rund um den 21. Dezember besonders?",
     optionen:["Längste Nacht des Jahres","Erster Schnee ist statistisch fällig","Vollmond","Tag mit den meisten Paketen"], richtig:0, info:"Wintersonnenwende – ab jetzt werden die Tage wieder länger."},
   {typ:"frage", titel:"Tradition", text:"Welche Familientradition sollen wir unbedingt behalten – oder welche sollten wir neu einführen?"},
-  {typ:"aufgabe", titel:"Summ mal", text:"Schick eine Sprachnachricht: 10 Sekunden ein Weihnachtslied summen (nicht singen!). Die anderen raten."},
-  {typ:"foto", titel:"Heiligabend", text:"Schick ein Foto von eurem Baum oder Tisch – und einen Wunsch für nächstes Jahr. Frohe Weihnachten! 🎄"},
+  {typ:"aufgabe", titel:"Summ mal", text:"Schick eine Sprachnachricht: 10 Sekunden ein Weihnachtslied summen (nicht singen). Die anderen raten."},
+  {typ:"foto", titel:"Heiligabend", text:"Schick ein Foto von eurem Baum oder Tisch – und einen Wunsch für nächstes Jahr. Frohe Weihnachten."},
 ];
 
 /* Aufwärmrunde: vor dem 1.12. schon offen */
@@ -190,7 +228,7 @@ const BONUS = [ // Überraschungs-Topf: jeder bekommt pro Tag (24.–30.11.) ein
   {typ:"frage", titel:"Familienessen", text:"Welches Essen aus der Familie könntest du jeden Tag essen?"},
   {typ:"frage", titel:"Die Geschichte", text:"Welche Familiengeschichte wird bei jedem Treffen wieder erzählt?"},
   {typ:"frage", titel:"Kinderzimmer", text:"Was war früher dein absolutes Lieblingsspielzeug?"},
-  {typ:"aufgabe", titel:"Ein Emoji", text:"Schick genau ein Emoji in die Gruppe, das deine Woche beschreibt. Keine Erklärung!"},
+  {typ:"aufgabe", titel:"Ein Emoji", text:"Schick genau ein Emoji in die Gruppe, das deine Woche beschreibt. Ohne Erklärung."},
   {typ:"aufgabe", titel:"Drei Wörter", text:"Beschreib deinen heutigen Tag in genau drei Wörtern."},
   {typ:"aufgabe", titel:"Ho ho ho", text:"Schick eine Sprachnachricht mit deinem besten „Ho ho ho“."},
   {typ:"aufgabe", titel:"Gesichtsausdruck", text:"Selfie mit deinem müdesten oder deinem fröhlichsten Gesicht – du entscheidest."},
@@ -207,7 +245,7 @@ const SPRUECHE = {
   26:["Wie heißt die Frau vom Weihnachtsmann?","Mary Christmas."],
   27:["Wie nennt man einen Weihnachtsmann, der Angst vor engen Kaminen hat?","Klaustrophobi-Klaus."],
   28:["Vorfreude ist die schönste Freude.",""],
-  29:["Heute ist der 1. Advent – erste Kerze an!","Erst eine Kerze, dann zwei, dann drei, dann vier …"],
+  29:["Heute ist der 1. Advent – erste Kerze an","Erst eine Kerze, dann zwei, dann drei, dann vier …"],
   30:["Welche Türchen bleiben heute noch zu?","Alle 24. Aber nur noch bis Mitternacht."],
 };
 const SPRUCH_RESERVE = [
@@ -226,12 +264,11 @@ const REIHENFOLGE = [7,15,2,21,11,24,4,18,13,1,20,9,16,6,23,10,3,19,12,22,8,14,5
 /* ======================= DATUM ======================= */
 const VORSCHAU = new URLSearchParams(location.search).has("vorschau");
 function berlinHeute(){
-  const p = new Intl.DateTimeFormat("de-DE",{timeZone:"Europe/Berlin",year:"numeric",month:"numeric",day:"numeric"})
-    .formatToParts(new Date());
+  const p = new Intl.DateTimeFormat("de-DE",{timeZone:"Europe/Berlin",year:"numeric",month:"numeric",day:"numeric"}).formatToParts(new Date());
   const g = t => +p.find(x=>x.type===t).value;
   return {y:g("year"), m:g("month"), d:g("day")};
 }
-function offenBis(){ // höchstes Türchen, das offen ist
+function offenBis(){
   if (VORSCHAU) return 24;
   const t = berlinHeute();
   if (t.y > 2026 || (t.y===2026 && t.m===12 && t.d>24)) return 24;
@@ -240,10 +277,18 @@ function offenBis(){ // höchstes Türchen, das offen ist
 }
 function heuteNr(){ const t=berlinHeute(); return (t.y===2026&&t.m===12&&t.d<=24)?t.d:0; }
 
+/* ======================= ICONS ======================= */
+const I = {
+  gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>',
+};
+
 /* ======================= SPEICHER ======================= */
-let STATE = {}; // {tage:{ "5": {dabei:{name:true}, quiz:{name:idx}} }}
+let STATE = {};
 let fb = null;
 const LS_KEY = "advent2026-local";
+const modeEl = document.getElementById("mode");
 
 async function initStore(){
   if (FIREBASE_CONFIG){
@@ -251,29 +296,26 @@ async function initStore(){
       const v = "10.12.2";
       const {initializeApp} = await import(`https://www.gstatic.com/firebasejs/${v}/firebase-app.js`);
       const db = await import(`https://www.gstatic.com/firebasejs/${v}/firebase-database.js`);
-      const app = initializeApp(FIREBASE_CONFIG);
-      const d = db.getDatabase(app);
+      const d = db.getDatabase(initializeApp(FIREBASE_CONFIG));
       fb = {db, d};
       db.onValue(db.ref(d, DB_PATH), snap => { STATE = snap.val() || {}; render(); });
-      document.getElementById("mode").textContent = "Live verbunden – alle sehen dasselbe.";
       return;
-    }catch(e){ console.error(e); }
+    }catch(e){ console.error(e); modeEl.textContent = "Keine Verbindung – gerade nur auf diesem Handy"; }
   }
   try{ STATE = JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ STATE = {}; }
-  document.getElementById("mode").textContent = FIREBASE_CONFIG
-    ? "Keine Verbindung – Daten nur auf diesem Handy."
-    : "Lokal-Modus (Firebase noch nicht eingerichtet).";
+  if (!FIREBASE_CONFIG && VORSCHAU) modeEl.textContent = "Vorschau · ohne Firebase, nur auf diesem Handy";
 }
 function save(path, value){
   if (fb){ fb.db.set(fb.db.ref(fb.d, `${DB_PATH}/${path}`), value); return; }
   const parts = path.split("/"); let o = STATE;
   parts.slice(0,-1).forEach(k => o = (o[k] = o[k] || {}));
-  o[parts.at(-1)] = value;
+  if (value === null) delete o[parts.at(-1)]; else o[parts.at(-1)] = value;
   try{ localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }catch(e){}
   render();
 }
 const safeKey = n => n.replace(/[.#$\[\]\/]/g,"_");
 const tagData = nr => (STATE.tage && STATE.tage[nr]) || {};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 /* ======================= NAME ======================= */
 let NAME = "";
@@ -281,12 +323,10 @@ try{ NAME = localStorage.getItem("advent2026-name") || ""; }catch(e){}
 function askName(then){
   const s = document.getElementById("sheet");
   s.innerHTML = `
-    <div class="kicker">Hallo!</div>
     <h3>Wie heißt du?</h3>
-    <p>Damit die anderen sehen, wer schon dabei war. Kein Konto, nur dein Name.</p>
-    <div class="namebox"><input id="nameIn" maxlength="20" placeholder="z. B. Silke" value="${esc(NAME)}" autocomplete="given-name"></div>
-    <button class="btn ok" id="nameOk">Los geht's</button>`;
-  openSheet(false);
+    <div class="namebox"><input id="nameIn" maxlength="20" placeholder="Vorname" value="${esc(NAME)}" autocomplete="given-name" enterkeyhint="done"></div>
+    <button class="btn pri" id="nameOk">Weiter</button>`;
+  openSheet(!!NAME);
   const inp = document.getElementById("nameIn");
   const go = () => {
     const v = inp.value.trim(); if(!v) return inp.focus();
@@ -298,54 +338,62 @@ function askName(then){
   setTimeout(()=>inp.focus(), 250);
 }
 
-/* ======================= RENDER ======================= */
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-
+/* ======================= ANSICHT ======================= */
 let PREVIEW_PHASE = "pre";
 const isPre = () => VORSCHAU ? PREVIEW_PHASE==="pre" : Date.now() < START_MS;
+const isDone = id => !!(NAME && tagData(id).dabei && tagData(id).dabei[safeKey(NAME)]);
 
 function render(){
   const pre = isPre();
-  document.getElementById("whoBtn").textContent = NAME ? `👤 ${NAME}` : "Name wählen";
+  document.getElementById("whoBtn").textContent = NAME || "Name";
   document.getElementById("titel").textContent = pre ? "Bald geht's los" : "24 Türchen";
   const vbar = document.getElementById("vbar");
   if (VORSCHAU){
     vbar.hidden = false;
-    vbar.innerHTML = `<button data-p="pre" class="${pre?"on":""}">Vorschau: Countdown</button><button data-p="kal" class="${pre?"":"on"}">Vorschau: Kalender</button>`;
+    vbar.innerHTML = `<button data-p="pre" class="${pre?"on":""}">Countdown</button><button data-p="kal" class="${pre?"":"on"}">Kalender</button>`;
     vbar.querySelectorAll("button").forEach(b => b.onclick = () => { PREVIEW_PHASE = b.dataset.p; render(); });
   }
-  document.getElementById("hint").hidden = pre;
-  document.getElementById("grid").hidden = pre;
-  document.getElementById("boardBox").hidden = pre;
+  document.getElementById("cal").hidden = pre;
   const xm = document.getElementById("xmas");
-  xm.hidden = pre || (!VORSCHAU && heuteNr()===0 && Date.now() > XMAS_MS + 864e5);
+  xm.hidden = pre || (!VORSCHAU && heuteNr()===0);
   if (!xm.hidden) tickXmas();
   renderPre();
-  if (pre) return;
+  if (pre){ document.getElementById("boardBox").hidden = true; return; }
 
   const offen = offenBis(), heute = heuteNr();
-  const hint = document.getElementById("hint");
-  if (heute) hint.textContent = `Heute ist Türchen ${heute} dran. Verpasste Türchen kannst du jederzeit nachholen.`;
-  else hint.textContent = VORSCHAU ? "Vorschau-Modus: alle Türchen offen." : "Alle Türchen sind offen. Frohe Weihnachten!";
-
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  REIHENFOLGE.forEach(nr => {
-    const t = TAGE[nr-1], b = document.createElement("button");
-    const locked = nr > offen;
-    const done = NAME && tagData(nr).dabei && tagData(nr).dabei[safeKey(NAME)];
-    b.className = "door" + (nr===24?" big":"") + (locked?" locked":"") + (nr===heute?" today":"") + (done&&!locked?" done":"");
-    b.innerHTML = `${nr}<span class="tag">${TYP_LABEL[t.typ]}</span>`;
-    b.setAttribute("aria-label", `Türchen ${nr}${locked?" (noch zu)":""}`);
-    if (!locked) b.onclick = () => NAME ? openDoor(nr) : askName(()=>openDoor(nr));
-    grid.appendChild(b);
+  document.getElementById("grid").innerHTML = REIHENFOLGE.map(nr => {
+    const t = TAGE[nr-1], locked = nr > offen, done = !locked && isDone(nr);
+    const cls = ["door", nr===24&&"big", nr===1&&"wide", locked&&"locked", nr===heute&&!done&&"today", done&&"done"].filter(Boolean).join(" ");
+    const typ = nr===24 ? "Heiligabend" : TYP_LABEL[t.typ];
+    return `<button class="${cls}" data-nr="${nr}" ${locked?"disabled":""} aria-label="Türchen ${nr}${locked?", noch zu":done?", erledigt":""}"><span class="nr">${nr}</span><span class="typ">${typ}</span></button>`;
+  }).join("");
+  document.querySelectorAll("#grid .door:not([disabled])").forEach(b => b.onclick = () => {
+    const nr = +b.dataset.nr; NAME ? openDoor(nr) : askName(()=>openDoor(nr));
   });
   renderBoard();
 }
 
-/* Überraschungen: jede Person bekommt an 3 zufälligen Tagen (24.–30.11.) eine Bonus-Aufgabe */
+function renderBoard(){
+  const punkte = {}, dabei = {}, tage = STATE.tage || {};
+  Object.entries(tage).forEach(([nr, d]) => {
+    const t = getItem(nr);
+    if (t && t.typ==="quiz" && d.quiz) Object.entries(d.quiz).forEach(([n, idx]) => { punkte[n] = (punkte[n]||0) + (idx===t.richtig?1:0); });
+    Object.keys(d.dabei||{}).forEach(n => dabei[n]=(dabei[n]||0)+1);
+  });
+  const namen = [...new Set([...Object.keys(punkte), ...Object.keys(dabei)])]
+    .sort((a,b)=>(punkte[b]||0)-(punkte[a]||0) || (dabei[b]||0)-(dabei[a]||0) || a.localeCompare(b));
+  const box = document.getElementById("boardBox");
+  box.hidden = !namen.length;
+  const me = NAME ? safeKey(NAME) : "";
+  document.getElementById("board").innerHTML = namen.map((n,i)=>{
+    const p = punkte[n]||0;
+    return `<div class="row${n===me?" me":""}"><span class="pl">${i+1}</span><span class="nm">${esc(n)}</span><span class="pk">${p} ${p===1?"Punkt":"Punkte"} · ${dabei[n]||0}× dabei</span></div>`;
+  }).join("");
+}
+
+/* Überraschungen: jede Person bekommt pro Tag (24.–30.11.) eine eigene aus dem Topf */
 function hashStr(str){ let h=2166136261; for (const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return h>>>0; }
-function surpriseFor(name, tag){ // fester, aber zufälliger Mix pro Name – innerhalb einer Person ohne Wiederholung
+function surpriseFor(name, tag){
   const idx = BONUS.map((_,i)=>i); let seed = hashStr(name.trim().toLowerCase()) || 1;
   for (let i=idx.length-1;i>0;i--){ seed=(Math.imul(seed^(seed>>>15),2246822507)>>>0)||7; const j=seed%(i+1); [idx[i],idx[j]]=[idx[j],idx[i]]; }
   return idx[(tag-24) % idx.length];
@@ -354,67 +402,52 @@ let PREVIEW_SHIFT = 0;
 
 function renderPre(){
   const box = document.getElementById("pre");
+  const old = document.getElementById("surpriseSlot"); if (old) old.remove();
   if (!isPre()){ box.hidden = true; box.innerHTML = ""; return; }
   box.hidden = false;
   const t = berlinHeute();
-  const heute = t.m===11 ? t.d : 31;
+  const heute = t.m===11 ? t.d : 30;
   const sp = (t.m===11 && SPRUECHE[t.d]) || SPRUCH_RESERVE[t.d % SPRUCH_RESERVE.length];
   let extra = "";
   if (NAME && heute>=24 && heute<=30){
     const i = (surpriseFor(NAME, heute) + PREVIEW_SHIFT) % BONUS.length, id = "b"+(i+1), b = BONUS[i];
-    const done = !!(tagData(id).dabei && tagData(id).dabei[safeKey(NAME)]);
-    extra = done
-      ? `<button class="surprise old" data-id="${id}"><b>✓ Heute erledigt</b>Morgen wartet die nächste Überraschung.</button>`
-      : `<button class="surprise" data-id="${id}"><b>🎁 Deine Überraschung für heute</b>Tippen zum Öffnen.</button>`;
-    if (VORSCHAU) extra += `<button class="btn ghost" id="shuffle" style="color:var(--muted)">🎲 Andere Überraschung zeigen (nur Vorschau) · ${i+1}/${BONUS.length}</button>`;
+    extra = isDone(id)
+      ? `<button class="surprise done" data-id="${id}"><span class="seal">${I.check}</span><span><b>Heute erledigt</b><span>Morgen gibt's die nächste</span></span></button>`
+      : `<button class="surprise" data-id="${id}"><span class="seal">${I.gift}</span><span><b>Deine Überraschung</b><span>${VORSCHAU?esc(b.titel)+" · "+(i+1)+"/"+BONUS.length:"Für heute"}</span></span></button>`;
+    if (VORSCHAU) extra += `<button class="shuffle" id="shuffle">Andere Überraschung zeigen</button>`;
   }
   box.innerHTML = `
-    <p class="lbl">Noch bis zum ersten Türchen</p>
+    <p class="lbl">Bis zum ersten Türchen</p>
     <div class="cd" id="cd"></div>
-    <p class="spruch"><small>Witz des Tages</small>${esc(sp[0])}${sp[1]?`<span class="pointe">${esc(sp[1])}</span>`:""}</p>
-    ${extra}`;
-  box.querySelectorAll(".surprise").forEach(b => b.onclick = () => openDoor(b.dataset.id));
-  const sh = document.getElementById("shuffle"); if (sh) sh.onclick = () => { PREVIEW_SHIFT++; renderPre(); };
+    <div class="joke"><p class="lbl">Witz des Tages</p><p>${esc(sp[0])}</p>${sp[1]?`<p class="pointe">${esc(sp[1])}</p>`:""}</div>`;
+  if (extra){
+    const slot = document.createElement("div"); slot.id = "surpriseSlot"; slot.innerHTML = extra;
+    box.after(slot);
+    slot.querySelectorAll(".surprise").forEach(b => b.onclick = () => openDoor(b.dataset.id));
+    const sh = document.getElementById("shuffle"); if (sh) sh.onclick = () => { PREVIEW_SHIFT++; renderPre(); };
+  }
   tickCountdown();
+}
+function cdHtml(ms){
+  const tg=Math.floor(ms/864e5), h=Math.floor(ms/36e5)%24, m=Math.floor(ms/6e4)%60, s=Math.floor(ms/1e3)%60;
+  const pad = n => String(n).padStart(2,"0");
+  return [[tg,tg===1?"Tag":"Tage"],[pad(h),"Std"],[pad(m),"Min"],[pad(s),"Sek"]]
+    .map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join("");
 }
 function tickCountdown(){
   const el = document.getElementById("cd"); if(!el) return;
-  let ms = START_MS - Date.now();
-  if (ms <= 0){ render(); return; }
-  const tg=Math.floor(ms/864e5), h=Math.floor(ms/36e5)%24, m=Math.floor(ms/6e4)%60, s=Math.floor(ms/1e3)%60;
-  const pad = n => String(n).padStart(2,"0");
-  el.innerHTML = [[tg,tg===1?"Tag":"Tage"],[pad(h),"Std"],[pad(m),"Min"],[pad(s),"Sek"]]
-    .map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join("");
+  const ms = START_MS - Date.now();
+  if (ms <= 0 && !VORSCHAU){ render(); return; }
+  el.innerHTML = cdHtml(Math.max(ms,0));
 }
 function tickXmas(){
-  const box = document.getElementById("xmas"), el = document.getElementById("cdX");
+  const box = document.getElementById("xmas");
   if (!box || box.hidden) return;
   const ms = XMAS_MS - Date.now();
-  if (ms <= 0){ box.innerHTML = `<p class="heute">Heute ist Heiligabend! 🎄</p>`; return; }
-  const tg=Math.floor(ms/864e5), h=Math.floor(ms/36e5)%24, m=Math.floor(ms/6e4)%60, s=Math.floor(ms/1e3)%60;
-  const pad = n => String(n).padStart(2,"0");
-  el.innerHTML = [[tg,tg===1?"Tag":"Tage"],[pad(h),"Std"],[pad(m),"Min"],[pad(s),"Sek"]]
-    .map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join("");
+  if (ms <= 0){ box.innerHTML = `<p class="heute">Heute ist Heiligabend</p>`; return; }
+  document.getElementById("cdX").innerHTML = cdHtml(ms);
 }
 setInterval(() => { tickCountdown(); tickXmas(); }, 1000);
-
-function renderBoard(){
-  const punkte = {}, tage = STATE.tage || {};
-  Object.entries(tage).forEach(([nr, d]) => {
-    const t = getItem(nr); if(!t || t.typ!=="quiz" || !d.quiz) return;
-    Object.entries(d.quiz).forEach(([n, idx]) => {
-      punkte[n] = (punkte[n]||0) + (idx===t.richtig?1:0);
-    });
-  });
-  const dabei = {};
-  Object.values(tage).forEach(d => Object.keys(d.dabei||{}).forEach(n => dabei[n]=(dabei[n]||0)+1));
-  const namen = [...new Set([...Object.keys(punkte), ...Object.keys(dabei)])]
-    .sort((a,b)=>(punkte[b]||0)-(punkte[a]||0) || (dabei[b]||0)-(dabei[a]||0));
-  const el = document.getElementById("board");
-  el.innerHTML = namen.length
-    ? namen.map((n,i)=>`<div class="row"><span>${i<3?["🥇","🥈","🥉"][i]+" ":""}${esc(n)}</span><span>${punkte[n]||0} Pkt · ${dabei[n]||0}× dabei</span></div>`).join("")
-    : `<div class="empty">Noch niemand dabei.</div>`;
-}
 
 /* ======================= TÜRCHEN ======================= */
 function openDoor(nr){
@@ -422,49 +455,42 @@ function openDoor(nr){
   const dabeiNamen = Object.keys(d.dabei||{});
   const istDabei = !!(d.dabei && d.dabei[me]);
   const s = document.getElementById("sheet");
-  let body = `<div class="kicker">${labelOf(nr)} · ${TYP_LABEL[t.typ]}</div>
-    <h3>${esc(t.titel)}</h3><p>${esc(t.text)}</p>`;
+  let body = `<p class="kicker">${labelOf(nr)} · ${TYP_LABEL[t.typ]}</p><h3>${esc(t.titel)}</h3><p>${esc(t.text)}</p>`;
 
   if (t.typ==="quiz"){
-    const meine = d.quiz ? d.quiz[me] : undefined;
-    const beantwortet = meine !== undefined;
+    const meine = d.quiz ? d.quiz[me] : undefined, beantwortet = meine !== undefined;
     body += `<div class="opts">` + t.optionen.map((o,i)=>{
-      let cls = "opt";
-      if (beantwortet && i===t.richtig) cls += " right";
-      else if (beantwortet && i===meine) cls += " wrong";
+      const cls = "opt" + (beantwortet && i===t.richtig ? " right" : beantwortet && i===meine ? " wrong" : "");
       return `<button class="${cls}" data-i="${i}" ${beantwortet?"disabled":""}>${esc(o)}</button>`;
     }).join("") + `</div>`;
     if (beantwortet){
       const alle = Object.values(d.quiz||{}), richtige = alle.filter(x=>x===t.richtig).length;
-      body += `<p class="result"><b>${meine===t.richtig?"Richtig! +1 Punkt":"Leider daneben."}</b> ${esc(t.info)}</p>
-        <p class="result" style="color:#55655f">${richtige} von ${alle.length} lagen richtig.</p>
-        <a class="btn wa" id="waBtn" href="#">In der Gruppe angeben 💬</a>`;
+      body += `<p class="res"><b>${meine===t.richtig?"Richtig · 1 Punkt":"Leider daneben"}</b><br>${esc(t.info)}</p>
+        <p class="res sm">${richtige} von ${alle.length} richtig</p>
+        <a class="btn wa" id="waBtn" href="#">${I.chat}In der Gruppe teilen</a>`;
     }
   } else if (t.typ==="satz"){
     if (!istDabei) setTimeout(()=>save(`tage/${nr}/dabei/${me}`, true), 0);
   } else {
-    body += `<a class="btn wa" id="waBtn" href="#">In WhatsApp antworten 💬</a>
-      <button class="btn ok" id="doneBtn">${istDabei?"✓ Erledigt":"Hab ich gemacht ✓"}</button>`;
+    body += `<a class="btn wa" id="waBtn" href="#">${I.chat}In WhatsApp antworten</a>
+      <button class="btn sec${istDabei?" on":""}" id="doneBtn">${I.check}${istDabei?"Erledigt":"Als erledigt markieren"}</button>`;
   }
-  if (t.typ!=="satz") body += `<div class="dabei">${dabeiNamen.length ? "Dabei: "+dabeiNamen.map(esc).join(", ") : "Noch niemand dabei – sei die/der Erste."}</div>`;
-  body += `<button class="btn ghost" id="closeBtn">Schließen</button>`;
+  if (t.typ!=="satz" && dabeiNamen.length) body += `<p class="dabei">Dabei: ${dabeiNamen.map(esc).join(", ")}</p>`;
+  body += `<button class="btn link" id="closeBtn">Schließen</button>`;
   s.innerHTML = body;
   openSheet(true);
 
+  const reopen = () => setTimeout(()=>openDoor(nr), fb?400:0);
   s.querySelectorAll(".opt:not([disabled])").forEach(b => b.onclick = () => {
-    save(`tage/${nr}/quiz/${me}`, +b.dataset.i);
-    save(`tage/${nr}/dabei/${me}`, true);
-    setTimeout(()=>openDoor(nr), fb?400:0);
+    save(`tage/${nr}/quiz/${me}`, +b.dataset.i); save(`tage/${nr}/dabei/${me}`, true); reopen();
   });
   const done = document.getElementById("doneBtn");
-  if (done) done.onclick = () => { save(`tage/${nr}/dabei/${me}`, !istDabei || null); setTimeout(()=>openDoor(nr), fb?400:0); };
+  if (done) done.onclick = () => { save(`tage/${nr}/dabei/${me}`, istDabei ? null : true); reopen(); };
   const wa = document.getElementById("waBtn");
   if (wa){
-    let msg;
-    if (t.typ==="quiz"){
-      const meine = (tagData(nr).quiz||{})[me];
-      msg = `🎄 ${labelOf(nr)}: ${t.titel}\n${meine===t.richtig?"Hab's richtig! 😎":"Lag daneben 🙈"} Wer noch?`;
-    } else msg = `🎄 ${labelOf(nr)} – ${t.titel}\n${t.text}\n\n➜ `;
+    const msg = t.typ==="quiz"
+      ? `${labelOf(nr)}: ${t.titel}\n${(tagData(nr).quiz||{})[me]===t.richtig?"Hab's richtig.":"Lag daneben."} Wer noch?`
+      : `${labelOf(nr)} – ${t.titel}\n${t.text}\n\n`;
     wa.href = "https://wa.me/?text=" + encodeURIComponent(msg);
     wa.target = "_blank"; wa.rel = "noopener";
   }
@@ -479,22 +505,23 @@ document.getElementById("whoBtn").onclick = () => askName();
 
 /* ======================= SCHNEE ======================= */
 (function(){
-  const c = document.getElementById("snow"), x = c.getContext("2d");
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  let W,H,flakes=[];
+  const c = document.getElementById("snow"), x = c.getContext("2d");
+  let W,H; const flakes=[];
   const resize = () => { W=c.width=innerWidth*devicePixelRatio; H=c.height=innerHeight*devicePixelRatio; };
   resize(); addEventListener("resize", resize);
-  for(let i=0;i<45;i++) flakes.push({x:Math.random(),y:Math.random(),r:Math.random()*1.6+.6,s:Math.random()*.0006+.0003,w:Math.random()*6});
+  for(let i=0;i<32;i++) flakes.push({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.5,s:Math.random()*.0005+.00025,w:Math.random()*6});
   (function tick(){
-    x.clearRect(0,0,W,H); x.fillStyle="rgba(246,239,226,.55)";
-    flakes.forEach(f=>{ f.y+=f.s; f.w+=.01; if(f.y>1){f.y=-.02;f.x=Math.random();}
-      x.beginPath(); x.arc((f.x+Math.sin(f.w)*.01)*W, f.y*H, f.r*devicePixelRatio, 0, 7); x.fill(); });
+    x.clearRect(0,0,W,H); x.fillStyle="rgba(243,234,216,.35)";
+    flakes.forEach(f=>{ f.y+=f.s; f.w+=.008; if(f.y>1){f.y=-.02;f.x=Math.random();}
+      x.beginPath(); x.arc((f.x+Math.sin(f.w)*.008)*W, f.y*H, f.r*devicePixelRatio, 0, 7); x.fill(); });
     requestAnimationFrame(tick);
   })();
 })();
 
 /* ======================= START ======================= */
 initStore().then(() => { render(); if(!NAME) askName(); });
+}
 </script>
 </body>
 </html>
