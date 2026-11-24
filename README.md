@@ -37,3 +37,7 @@ Ohne Config läuft alles nur lokal auf dem jeweiligen Handy. Im Vorschau-Modus (
 ## Inhalte ändern
 
 Die Texte stehen in `index.html` in der Liste `TAGE`.
+
+## Übersicht für Uli
+
+`…/?admin=1` zeigt, wer wann da war, wie oft die App geöffnet wurde und welche Türchen angeschaut oder erledigt sind. Tippen auf einen Namen zeigt die Details. Die Seite hat kein Passwort.
