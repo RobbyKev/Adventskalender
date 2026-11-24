@@ -14,6 +14,10 @@ Ein Türchen pro Tag für die ganze Familie. Fragen, Fotos, Aufgaben und Schätz
 
 Am 24.12. erscheint über der Rangliste die Siegerehrung.
 
+## Als App speichern
+
+Unten in der App gibt es den Knopf „Als App speichern“ mit der Anleitung für iPhone und Android.
+
 ## Firebase (für die gemeinsame Rangliste)
 
 1. Firebase-Projekt anlegen und die **Realtime Database** aktivieren.

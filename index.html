@@ -125,6 +125,14 @@ h1{font-weight:700;font-size:34px;line-height:1.1;margin:0;letter-spacing:.01em}
 .pl1 .stufe{height:112px;font-size:36px;background:rgba(224,189,110,.22)}
 .pl2 .stufe{height:80px}
 .pl3 .stufe{height:60px}
+.install{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:48px;margin-top:32px;border-radius:14px;
+  border:.5px solid var(--hair);background:var(--glass);color:var(--text);font-size:16px;font-weight:500;cursor:pointer}
+.install svg{width:18px;height:18px;color:var(--gold)}
+.steps{list-style:none;margin:0 0 8px;padding:0;border-radius:14px;overflow:hidden;background:var(--glass2)}
+.steps li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:center;padding:12px 16px;font-size:16px;line-height:1.4;position:relative}
+.steps li+li::before{content:"";position:absolute;top:0;left:56px;right:0;border-top:.5px solid var(--hair)}
+.steps .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#1a140a;font-family:var(--round);font-weight:600;font-size:15px}
+.steps b{font-weight:600}
 .mode{margin-top:24px;text-align:center;font-size:12px;color:var(--text3)}
 
 /* Blatt von unten, wie in iOS */
@@ -179,6 +187,7 @@ h1{font-weight:700;font-size:34px;line-height:1.1;margin:0;letter-spacing:.01em}
     <h2>Rangliste</h2>
     <div id="board"></div>
   </section>
+  <button class="install" id="installBtn" hidden></button>
   <div class="mode" id="mode"></div>
 </main>
 
@@ -552,6 +561,42 @@ function openSheet(closable){ overlay.classList.add("show"); overlay.dataset.clo
 function closeSheet(){ overlay.classList.remove("show"); }
 overlay.addEventListener("click", e => { if (e.target===overlay && overlay.dataset.closable) closeSheet(); });
 document.getElementById("whoBtn").onclick = () => askName();
+
+/* ======================= ALS APP SPEICHERN ======================= */
+let installEvt = null;
+const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const ua = navigator.userAgent;
+const isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+const isAndroid = /Android/.test(ua);
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(()=>{});
+addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; });
+addEventListener("appinstalled", () => { document.getElementById("installBtn").hidden = true; closeSheet(); });
+const installBtn = document.getElementById("installBtn");
+const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>';
+if (!standalone){ installBtn.hidden = false; installBtn.innerHTML = phoneIcon + "Als App speichern"; }
+installBtn.onclick = () => {
+  const step = (n, html) => `<li><span class="n">${n}</span><span>${html}</span></li>`;
+  const ios = `<p class="kicker">iPhone</p><ol class="steps">
+      ${step(1,"Seite in <b>Safari</b> öffnen")}
+      ${step(2,"Unten auf <b>Teilen</b> tippen, das Quadrat mit Pfeil nach oben")}
+      ${step(3,"<b>Zum Home-Bildschirm</b> wählen, eventuell etwas nach unten scrollen")}
+      ${step(4,"Oben rechts auf <b>Hinzufügen</b>")}</ol>`;
+  const android = `<p class="kicker">Android</p><ol class="steps">
+      ${step(1,"Seite in <b>Chrome</b> öffnen")}
+      ${step(2,"Oben rechts auf die <b>drei Punkte</b> tippen")}
+      ${step(3,"<b>App installieren</b> oder <b>Zum Startbildschirm hinzufügen</b> wählen")}
+      ${step(4,"Mit <b>Installieren</b> bestätigen")}</ol>`;
+  const s = document.getElementById("sheet");
+  s.innerHTML = `<h3>Als App speichern</h3>
+    <p>Dann liegt der Kalender mit eigenem Symbol auf deinem Startbildschirm und öffnet sich ohne Browserleiste.</p>
+    ${installEvt ? `<button class="btn pri" id="doInstall">Jetzt installieren</button><p></p>` : ""}
+    ${isIOS ? ios : isAndroid ? android : ios + android}
+    <button class="btn link" id="closeBtn">Schließen</button>`;
+  openSheet(true);
+  const di = document.getElementById("doInstall");
+  if (di) di.onclick = async () => { installEvt.prompt(); await installEvt.userChoice.catch(()=>{}); installEvt = null; closeSheet(); };
+  document.getElementById("closeBtn").onclick = closeSheet;
+};
 
 /* ======================= SCHNEE ======================= */
 (function(){
