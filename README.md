@@ -5,6 +5,15 @@ Ein Türchen pro Tag für die ganze Familie. Fragen, Fotos, Aufgaben und Schätz
 - **Kalender:** https://robbykev.github.io/Adventskalender/
 - **Vorschau zum Testen (Countdown und Kalender umschaltbar):** https://robbykev.github.io/Adventskalender/?vorschau=1
 
+## Punkte
+
+- Quiz richtig beantwortet: 1 Punkt
+- Foto, Frage oder Aufgabe als erledigt markiert: 1 Punkt (auch die Überraschungen vor dem 1.12.)
+- Gedanken: keine Punkte
+- Bei Gleichstand liegt vorne, wer öfter dabei war
+
+Am 24.12. erscheint über der Rangliste die Siegerehrung.
+
 ## Firebase (für die gemeinsame Rangliste)
 
 1. Firebase-Projekt anlegen und die **Realtime Database** aktivieren.
