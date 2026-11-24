@@ -46,7 +46,12 @@ h1{font-weight:700;font-size:34px;line-height:1.1;margin:0;letter-spacing:.01em}
 
 .panel{background:var(--glass);border:.5px solid var(--hair);border-radius:22px;padding:20px;
   -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}
-.panel+.panel,.panel+.sheetcal{margin-top:16px}
+.panel+.panel,.panel+.sheetcal,#surpriseSlot>.panel{margin-top:16px}
+.count{background:linear-gradient(180deg,#bd352c,#8e211b);border:.5px solid rgba(224,189,110,.55);
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 14px 34px rgba(142,33,27,.4);-webkit-backdrop-filter:none;backdrop-filter:none}
+.count .lbl{color:rgba(251,231,184,.85)}
+.count .cd b{color:#fdf0d2}
+.count .cd span{color:rgba(251,231,184,.7)}
 .lbl{font-size:13px;font-weight:600;color:var(--text2);margin:0 0 8px}
 .cd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
 .cd div{text-align:center}
@@ -55,7 +60,7 @@ h1{font-weight:700;font-size:34px;line-height:1.1;margin:0;letter-spacing:.01em}
 .xmas .cd b{font-size:clamp(28px,9vw,36px)}
 .heute{font-weight:700;font-size:24px;margin:0;color:var(--gold)}
 
-.joke{margin:20px 0 0;padding-top:16px;border-top:.5px solid var(--hair)}
+.joke{}
 .joke p{margin:0;font-size:17px;line-height:1.4}
 .joke p.lbl{font-size:13px;color:var(--text2);margin:0 0 6px}
 .joke .pointe{margin-top:6px;color:var(--gold);font-weight:500}
@@ -152,8 +157,8 @@ h1{font-weight:700;font-size:34px;line-height:1.1;margin:0;letter-spacing:.01em}
     <button class="who" id="whoBtn"></button>
   </header>
   <div class="vbar" id="vbar" hidden></div>
-  <section class="panel" id="pre" hidden></section>
-  <section class="panel xmas" id="xmas" hidden><p class="lbl">Bis Heiligabend</p><div class="cd" id="cdX"></div></section>
+  <section class="panel count" id="pre" hidden></section>
+  <section class="panel count xmas" id="xmas" hidden><p class="lbl">Bis Heiligabend</p><div class="cd" id="cdX"></div></section>
   <div class="sheetcal" id="cal"><div class="grid" id="grid"></div></div>
   <section class="board" id="boardBox" hidden>
     <h2>Rangliste</h2>
@@ -433,8 +438,8 @@ function renderPre(){
   }
   box.innerHTML = `
     <p class="lbl">Bis zum ersten Türchen</p>
-    <div class="cd" id="cd"></div>
-    <div class="joke"><p class="lbl">Witz des Tages</p><p>${esc(sp[0])}</p>${sp[1]?`<p class="pointe">${esc(sp[1])}</p>`:""}</div>`;
+    <div class="cd" id="cd"></div>`;
+  extra = `<div class="panel joke"><p class="lbl">Witz des Tages</p><p>${esc(sp[0])}</p>${sp[1]?`<p class="pointe">${esc(sp[1])}</p>`:""}</div>` + extra;
   if (extra){
     const slot = document.createElement("div"); slot.id = "surpriseSlot"; slot.innerHTML = extra;
     box.after(slot);
