@@ -3,7 +3,7 @@
 Ein Türchen pro Tag für die ganze Familie. Fragen, Fotos, Aufgaben und Schätzfragen werden in der WhatsApp-Gruppe beantwortet. Das Quiz und die Rangliste laufen in der App.
 
 - **Kalender:** https://robbykev.github.io/Adventskalender/
-- **Vorschau mit allen Türchen:** https://robbykev.github.io/Adventskalender/?vorschau=1
+- **Vorschau zum Testen (Countdown und Kalender umschaltbar):** https://robbykev.github.io/Adventskalender/?vorschau=1
 
 ## Firebase (für die gemeinsame Rangliste)
 
